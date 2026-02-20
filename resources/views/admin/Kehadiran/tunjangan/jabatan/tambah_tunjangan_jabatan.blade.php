@@ -49,7 +49,7 @@
                     <label class="mb-2 required fw-semibold fs-6">Tunjangan</label>
                     <!--end::Label-->
                     <!--begin::Col-->
-                    <input type="text" class="form-control form-control-lg" name="tunjangan_jabatan" placeholder="Tunjangan Keluarga" required>
+                    <input type="text" class="form-control form-control-lg" name="tunjangan_jabatan" placeholder="Tunjangan Jabatan" required>
                     <!--end::Col-->
                 </div>
                 <!--end::Input group-->

@@ -16,14 +16,14 @@
         <!--begin::Modal body-->
         <div class="pt-0 modal-body scroll-y px-15 px-lg-15 pb-15">
             <!--begin:Form-->
-            <form class="form" method="POST" enctype="multipart/form-data" action="">
+            <form class="form" method="POST" enctype="multipart/form-data" action="{{ route('kehadiran-tunjangan-rankDosen.update', $item->id) }}">
                 @csrf
                 @method('PUT')
                 <!--begin::Heading-->
                 <div class="text-center mb-13">
                     <!--begin::Title-->
                     <h1 class="mb-3">Edit Tunjangan Rank Dosen</h1>
-                    <div class="text-muted fw-semibold fs-5">Kehadiran Umana Perpustakaan Ibrahimy.</div>
+                    <div class="text-muted fw-semibold fs-5">Kehadiran Umana' Perpustakaan Ibrahimy.</div>
                     <!--end::Title-->
                 </div>
                 <!--end::Heading-->

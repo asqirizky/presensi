@@ -32,7 +32,7 @@
                     <label class="mb-2 required fw-semibold fs-6">Tunjangan</label>
                     <!--end::Label-->
                     <!--begin::Col-->
-                    <input type="text" class="form-control form-control-lg" name="tunjangan_anak" placeholder="Tunjangan Kehormatan" required>
+                    <input type="text" class="form-control form-control-lg" name="tunjangan_anak" placeholder="Tunjangan Anak" required>
                     <!--end::Col-->
                 </div>
                 <!--end::Input group-->

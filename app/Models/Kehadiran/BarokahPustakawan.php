@@ -11,6 +11,6 @@ class BarokahPustakawan extends Model
     protected $guarded = ['id'];
 
     public function pegawai () {
-        return $this->belongsTo(Pegawai::class);
+        return $this->belongsTo(Pegawai::class, 'pegawai_id');
     }
 }

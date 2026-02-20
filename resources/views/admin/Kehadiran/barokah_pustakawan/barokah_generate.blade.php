@@ -55,14 +55,14 @@
             <div id="kt_app_content_container" class="app-container container-xxl">
                 <!--begin::Products-->
                 <div class="card card-flush" >
-                    <form method="POST" enctype="multipart/form-data" action="admin/kehadiran-barokah_pustakawan">
+                    <form method="POST" enctype="multipart/form-data" action="{{ route('kehadiran-barokah_pustakawan.store')}}">
                         @csrf
                         <!--begin::Card header-->
                         <div class="gap-2 py-5 card-header align-items-center gap-md-5 bg-success" style="background-image: url('/admin/assets/media/pattern.png'); background-size: 650px; background-position: right; background-repeat: no-repeat;">
                             <!--begin::Card title-->
                             <div class="card-title">
                                 <!--end::Button filter-->
-                                    <a type="submit" class="btn btn-danger me-4">Simpan</a>
+                                    <button type="submit" class="btn btn-danger me-4">Simpan</button>
                                 <!--end::Button filter-->
                                 <!--begin::Menu-->
                                 <a href="#" class="btn btn-m btn-light-primary btn-active-primary btn-flex btn-center" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
@@ -82,15 +82,6 @@
                                     @endforeach
                                 </div>
                                 <!--end::Menu-->
-                            </div>
-                            
-                            <!--end::Card title-->
-                            <!--begin::Card title-->
-                            <div class="gap-2 card-toolbar d-flex justify-content-end align-items-center">
-                                <form action="" method="GET" class="gap-2 d-flex align-items-center">
-                                    <input class="form-control mw-150px" type="date" name="tanggal">
-                                    <button class="btn fw-bold btn-primary">Filter</button>
-                                </form>
                             </div>
                             <!--end::Card title-->
                         </div>
@@ -137,7 +128,8 @@
                                         <td class="text-center">
                                             <div class="form-check form-check-custom form-check-sm">
                                                 <input type="hidden" name="pegawai[{{ $item->id }}][t_kehadiran]" value="0">
-                                                <input class="form-check-input" type="checkbox" value="{{ $item->kehadiran }}" name="pegawai[{{ $item->id }}][t_kehadiran]" id="flexRadioLg"/>
+                                                <input class="form-check-input" type="checkbox" value   ="{{ $item->kehadiran }}" name="pegawai[{{ $item->id }}][t_kehadiran]"
+                                                {{ isset($barokah[$item->id]) && $barokah[$item->id]->t_kehadiran > 0 ? 'checked' : ''}}/>
                                                 <label class="form-check-label" for="flexRadioLg">
                                                     {{ number_format($item->kehadiran, 0, ',', '.') }}
                                                 </label>
@@ -146,7 +138,10 @@
                                         <!-- Jabatan -->
                                         <td class="text-center">
                                             <div class="form-check form-check-custom form-check-sm">
-                                                <input class="form-check-input" type="checkbox" value="1" name="tunjangan[{{ $item->id }}][jabatan]" id="flexRadioLg"/>
+                                                <input type="hidden" name="pegawai[{{ $item->id }}][t_jabatan]" value="0">
+                                                <input class="form-check-input" type="checkbox" value="{{ $item->jabatan }}" name="pegawai[{{ $item->id }}][t_jabatan]"
+                                                {{ isset($barokah[$item->id]) && $barokah[$item->id]->t_jabatan > 0 ? 'checked' : ''}}
+                                                id="flexRadioLg"/>
                                                 <label class="form-check-label" for="flexRadioLg">
                                                 {{ number_format($item->jabatan, 0, ',', '.') }}
                                                 </label>
@@ -155,7 +150,10 @@
                                         <!-- Pengabdian -->
                                         <td class="text-center">
                                             <div class="form-check form-check-custom form-check-sm">
-                                                <input class="form-check-input" type="checkbox" value="1" name="tunjangan[{{ $item->id }}][pengabdian]" id="flexRadioLg"/>
+                                                <input type="hidden" name="pegawai[{{$item->id}}][t_pengabdian]" value="0">
+                                                <input class="form-check-input" type="checkbox" value="{{ $item->pengabdian }}" name="pegawai[{{ $item->id }}][t_pengabdian]"
+                                                {{ isset($barokah[$item->id]) && $barokah[$item->id]->t_pengabdian > 0 ? 'checked' : ''}}
+                                                id="flexRadioLg"/>
                                                 <label class="form-check-label" for="flexRadioLg">
                                                 {{ number_format($item->pengabdian, 0, ',', '.') }}
                                                 </label>
@@ -164,7 +162,10 @@
                                         <!-- Tunkel -->
                                         <td class="text-center">
                                             <div class="form-check form-check-custom form-check-sm">
-                                                <input class="form-check-input" type="checkbox" value="1" name="tunjangan[{{ $item->id }}][tunkel]" id="flexRadioLg"/>
+                                                <input type="hidden" name="pegawai[{{ $item->id }}][t_tunkel]" value="0">
+                                                <input class="form-check-input" type="checkbox" value="{{ $item->tunkel }}" name="pegawai[{{ $item->id }}][t_tunkel]"
+                                                {{ isset($barokah[$item->id]) && $barokah[$item->id]->tunkel > 0 ? 'checked' : ''}}
+                                                id="flexRadioLg"/>
                                                 <label class="form-check-label" for="flexRadioLg">
                                                 {{ number_format($item->tunkel, 0, ',', '.') }}
                                                 </label>
@@ -173,7 +174,10 @@
                                         <!-- Kehormatan -->
                                         <td class="text-center">
                                             <div class="form-check form-check-custom form-check-sm">
-                                                <input class="form-check-input" type="checkbox" value="1" name="tunjangan[{{ $item->id }}][jabatan]" id="flexRadioLg"/>
+                                                <input type="hidden" name="pegawai[{{ $item->id }}][t_kehormatan]" value="0">
+                                                <input class="form-check-input" type="checkbox" value="{{ $item->kehormatan }}" name="pegawai[{{ $item->id }}][t_kehormatan]"
+                                                {{ isset($barokah[$item->id]) && $barokah[$item->id]->tunkel > 0 ? 'checked' : ''}}
+                                                id="flexRadioLg"/>
                                                 <label class="form-check-label" for="flexRadioLg">
                                                 {{ number_format($item->kehormatan, 0, ',', '.') }}
                                                 </label>
@@ -182,7 +186,10 @@
                                         <!-- Anak -->
                                         <td class="text-center">
                                             <div class="form-check form-check-custom form-check-sm">
-                                                <input class="form-check-input" type="checkbox" value="1" name="tunjangan[{{ $item->id }}][anak]" id="flexRadioLg"/>
+                                                <input type="hidden" name="pegawai[{{ $item->id }}][t_anak]" value="0">
+                                                <input class="form-check-input" type="checkbox" value="{{ $item->anak }}" name="pegawai[{{ $item->id }}][t_anak]"
+                                                {{ isset($barokah[$item->id]) && $barokah[$item->id]->anak > 0 ? 'checked' : ''}}
+                                                id="flexRadioLg"/>
                                                 <label class="form-check-label" for="flexRadioLg">
                                                 {{ number_format($item->anak, 0, ',', '.') }}
                                                 </label>

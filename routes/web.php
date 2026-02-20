@@ -1,59 +1,33 @@
 <?php
 
-use Termwind\Components\Raw;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\HomeController;
-use App\Http\Controllers\UserController;
-use App\Http\Controllers\LoginController;
-use App\Http\Controllers\BeritaController;
-use App\Http\Controllers\BuletinController;
-use App\Http\Controllers\WelcomeController;
-use App\Http\Controllers\KegiatanController;
-use App\Http\Controllers\ResourceController;
-use App\Http\Controllers\Aset\AsetController;
-use App\Http\Controllers\Aset\UnitController;
-use App\Http\Middleware\PermissionMiddleware;
-use App\Http\Controllers\Aset\GedungController;
-use App\Http\Controllers\Aset\LokasiController;
-use App\Http\Controllers\Aset\SumberController;
-use App\Http\Controllers\Absensi\IzinController;
 use App\Http\Controllers\Absensi\AbsenController;
-use App\Http\Controllers\Absensi\RekapController;
-use App\Http\Controllers\Absensi\ShiftController;
-use App\Http\Controllers\Aset\KategoriController;
-use App\Http\Controllers\Koleksi\ArsipController;
-use App\Http\Controllers\Layanan\KartuController;
-use App\Http\Controllers\Koleksi\GaleriController;
-use App\Http\Controllers\Koleksi\MuseumController;
 use App\Http\Controllers\Absensi\BarokahController;
 use App\Http\Controllers\Absensi\HolidayController;
+use App\Http\Controllers\Absensi\IzinController;
 use App\Http\Controllers\Absensi\KhidmahController;
 use App\Http\Controllers\Absensi\LaporanController;
-use App\Http\Controllers\Kehadiran\LiburController;
-use App\Http\Controllers\User\PermissionController;
-use App\Http\Controllers\Kehadiran\JadwalController;
-use App\Http\Controllers\Aset\PemeliharaanController;
+use App\Http\Controllers\Absensi\LokasiAbsensiController;
+use App\Http\Controllers\Absensi\RekapController;
+use App\Http\Controllers\Absensi\ShiftController;
+use App\Http\Controllers\HomeController;
+use App\Http\Controllers\Kehadiran\BarokahPustakawanController;
+use App\Http\Controllers\Kehadiran\IzinPegawaiController;
 use App\Http\Controllers\Kehadiran\JabatanController;
+use App\Http\Controllers\Kehadiran\JadwalController;
+use App\Http\Controllers\Kehadiran\KehadiranController;
+use App\Http\Controllers\Kehadiran\KehadiranLaporanController as KehadiranKehadiranLaporanController;
+use App\Http\Controllers\Kehadiran\LaporanController as KehadiranLaporanController;
+use App\Http\Controllers\Kehadiran\LiburController;
 use App\Http\Controllers\Kehadiran\PegawaiController;
 use App\Http\Controllers\Kehadiran\RekapanController;
-use App\Http\Controllers\Universitas\DosenController;
-use App\Http\Controllers\Universitas\ProdiController;
-use App\Http\Controllers\Administrasi\SuratController;
-use App\Http\Controllers\Akreditasi\KriteriaController;
-use App\Http\Controllers\Kehadiran\KehadiranController;
 use App\Http\Controllers\Kehadiran\TunjanganController;
-use App\Http\Controllers\Layanan\CekplagiasiController;
-use App\Http\Controllers\Akreditasi\InstrumenController;
-use App\Http\Controllers\Layanan\Kasir\ProdukController;
-use App\Http\Controllers\Absensi\LokasiAbsensiController;
-use App\Http\Controllers\Kehadiran\IzinPegawaiController;
-use App\Http\Controllers\Universitas\MahasiswaController;
-use App\Http\Controllers\Layanan\BebasTanggunganController;
-use App\Http\Controllers\Layanan\Kasir\TransaksiController;
-use App\Http\Controllers\Kehadiran\BarokahPustakawanController;
-use App\Http\Controllers\Kehadiran\LaporanController as KehadiranLaporanController;
-use App\Http\Controllers\Kehadiran\KehadiranLaporanController as KehadiranKehadiranLaporanController;
+use App\Http\Controllers\LoginController;
+use App\Http\Controllers\User\PermissionController;
+use App\Http\Controllers\UserController;
+use App\Http\Controllers\WelcomeController;
+use App\Http\Middleware\PermissionMiddleware;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Route;
 
 // Halaman utama bisa diakses oleh semua orang tanpa middleware
 // Route::get('/', [WelcomeController::class, 'berita']);
@@ -71,16 +45,45 @@ Route::middleware(['auth'])->group(function () {
     Route::get('/admin/home', [HomeController::class, 'index'])->name('home-user');
 });
 
+// Middleware hanya untuk pengguna dengan izin "manage users"
+Route::middleware(['auth', PermissionMiddleware::class . ':pengguna-lihat'])->group(function () {
+    Route::resource('/admin/pengguna', UserController::class);
+});
+
+Route::middleware(['auth', PermissionMiddleware::class . ':pengguna-ubah password'])->group(function () {
+    Route::post('/admin/pengguna/ubahpassword({id})', [UserController::class, 'ubahpassword']);
+});
+
+Route::middleware(['auth', PermissionMiddleware::class . ':pengguna-hapus'])->group(function () {
+    Route::get('/admin/pengguna({id})/hapus', [UserController::class, 'hapus']);
+});
+
+Route::middleware(['auth', PermissionMiddleware::class . ':pengguna-akses pengguna'])->group(function () {
+    Route::get('/admin/pengguna-akses({id})', [UserController::class, 'akses']);
+    Route::post('/admin/pengguna-akses/{id}/update', [UserController::class, 'updateAkses']);
+});
+
+Route::middleware(['auth', PermissionMiddleware::class . ':akses pengguna-lihat'])->group(function () {
+    Route::resource('/admin/pengguna-akses', PermissionController::class);
+});
+
+Route::middleware(['auth', PermissionMiddleware::class . ':akses pengguna-hapus'])->group(function () {
+    Route::get('/admin/pengguna-akses/{id}/hapus', [PermissionController::class, 'destroy']);
+});
+
 // Absensi-khidmah
 Route::middleware(['auth', PermissionMiddleware::class . ':absen khidmah-lihat'])->group(function () {
     Route::resource('/admin/absensi-khidmah', KhidmahController::class);
 });
+
 Route::middleware(['auth', PermissionMiddleware::class . ':absen khidmah-tambah'])->group(function () {
     Route::get('/admin/absensi-khidmah_tambah', [KhidmahController::class, 'tambah']);
 });
+
 Route::middleware(['auth', PermissionMiddleware::class . ':absen khidmah-hapus'])->group(function () {
     Route::get('/admin/absensi-khidmah({id})/hapus', [KhidmahController::class, 'destroy']);
 });
+
 Route::middleware(['auth', PermissionMiddleware::class . ':absen khidmah-detail'])->group(function () {
     Route::get('admin/absensi-detail_khidmah({id})', [KhidmahController::class, 'detail']);
     Route::post('admin/absensi-khidmah/kelolah-shift/{id}', [KhidmahController::class, 'kelolah_shift']);
@@ -91,6 +94,7 @@ Route::middleware(['auth', PermissionMiddleware::class . ':absen khidmah-detail'
 Route::middleware(['auth', PermissionMiddleware::class . ':absen lokasi-lihat'])->group(function () {
     Route::resource('/admin/absensi-lokasi', LokasiAbsensiController::class);
 });
+
 Route::middleware(['auth', PermissionMiddleware::class . ':absen lokasi-hapus'])->group(function () {
     Route::get('/admin/absensi-lokasi({id})/hapus', [LokasiAbsensiController::class, 'hapus']);
 });
@@ -99,6 +103,7 @@ Route::middleware(['auth', PermissionMiddleware::class . ':absen lokasi-hapus'])
 Route::middleware(['auth', PermissionMiddleware::class . ':absen libur-lihat'])->group(function () {
     Route::resource('/admin/absensi-holiday', HolidayController::class);
 });
+
 Route::middleware(['auth', PermissionMiddleware::class . ':absen libur-hapus'])->group(function () {
     Route::get('/admin/absensi-holiday({id})/hapus', [HolidayController::class, 'destroy']);
 });
@@ -116,6 +121,7 @@ Route::middleware(['auth', PermissionMiddleware::class . ':absen rekap-lihat'])-
 Route::middleware(['auth', PermissionMiddleware::class . ':absen izin-lihat'])->group(function () {
     Route::resource('/admin/absensi-izin', IzinController::class);
 });
+
 Route::middleware(['auth', PermissionMiddleware::class . ':absen izin-hapus'])->group(function () {
     Route::get('/admin/absensi-izin({id})/hapus', [IzinController::class, 'destroy']);
 });
@@ -138,9 +144,6 @@ Route::middleware(['auth', PermissionMiddleware::class . ':absen barokah-lihat']
 
 // Absensi-proses
 Route::resource('/admin/absensi-absen', AbsenController::class);
-
-
-
 
 // Kehadiran
 Route::middleware(['auth', PermissionMiddleware::class . ':kehadiran pegawai-lihat'])->group(function () {
@@ -211,7 +214,6 @@ Route::middleware(['auth', PermissionMiddleware::class . ':kehadiran tunjangan-l
     Route::resource('/admin/kehadiran-tunjangan-kehormatan', TunjanganController::class);
     Route::resource('/admin/kehadiran-tunjangan-anak', TunjanganController::class);
     Route::resource('/admin/kehadiran-tunjangan-rankDosen', TunjanganController::class);
-
 });
 
 Route::middleware(['auth', PermissionMiddleware::class . ':kehadiran tunjangan-hapus'])->group(function () {
@@ -243,8 +245,11 @@ Route::middleware(['auth', PermissionMiddleware::class . ':kehadiran rekapan-lih
 });
 
 // Generate barokah umana
-Route::resource('/admin/kehadiran-barokah_pustakawan', BarokahPustakawanController::class);
-Route::get('/admin/kehadiran-generate', [BarokahPustakawanController::class, 'generate']);
+Route::middleware(['auth', PermissionMiddleware::class . ':kehadiran generate-lihat'])->group(function () {
+    Route::resource('/admin/kehadiran-barokah_pustakawan', BarokahPustakawanController::class);
+    Route::get('/admin/kehadiran-generate', [BarokahPustakawanController::class, 'generate'])->name('kehadiran-generate');
+});
+
 // Laporan Presensi Umana'
 Route::get('/admin/laporan-cetak/{bulan}/{tahun}', [KehadiranKehadiranLaporanController::class, 'laporanPDF'])->name('laporan.cetak');
 

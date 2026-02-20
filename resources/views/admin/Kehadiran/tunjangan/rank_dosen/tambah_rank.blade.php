@@ -18,7 +18,6 @@
             <!--begin:Form-->
             <form class="form" method="POST" enctype="multipart/form-data" action="admin/kehadiran-tunjangan-rankDosen">
                 @csrf
-                @method('PUT')
                 <!--begin::Heading-->
                 <div class="text-center mb-13">
                     <!--begin::Title-->

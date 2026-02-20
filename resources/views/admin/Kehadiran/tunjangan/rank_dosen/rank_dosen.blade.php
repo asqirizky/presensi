@@ -46,7 +46,7 @@
                 <!--begin::Card-->
                 <div class="card">
                     <!--begin::Card header-->
-                    <div class="pt-6 border-0 card-header" style="background: linear-gradient(90deg, #014d4d, #0c7070, #00b3b3);">
+                    <div class="pt-6 border-0 card-header bg-success" style="background-image: url('/admin/assets/media/pattern.png'); background-size: 25%; background-position: right top; background-repeat: no-repeat;">
                         <!--begin::Card title-->
                         <div class="card-title">
                             <!--begin::Search-->
@@ -119,7 +119,7 @@
                     <div class="py-4 card-body">
                         <!--begin::Table-->
                         <table class="table align-middle table-striped fs-6 gy-5" id="kt_ecommerce_products_table">
-                            <thead class="fw-bold fs-5" style="background: linear-gradient(90deg, #006666, #008B8B, #00b3b3);">
+                            <thead class="fw-bold fs-5 bg-success">
                                 <tr class="text-white text-start fw-bold fs-7 text-uppercase gs-0">
                                     <th class="rounded-start w-10px pe-2"></th>
                                     <th class="text-center min-w-125px">Tahun Ke</th>

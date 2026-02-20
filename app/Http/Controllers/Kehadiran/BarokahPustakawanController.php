@@ -4,101 +4,32 @@ namespace App\Http\Controllers\Kehadiran;
 
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\Kehadiran\Anak;
-use App\Models\Kehadiran\Tunkel;
 use App\Models\Kehadiran\Pegawai;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
-use App\Models\Kehadiran\Kehormatan;
-use App\Models\Kehadiran\TunjanganJabatan;
 use App\Models\Kehadiran\BarokahPustakawan;
-use App\Models\Kehadiran\RankDosen;
-use App\Models\Kehadiran\TunjanganKehadiran;
-use App\Models\Kehadiran\TunjanganPengabdian;
 
-use function Symfony\Component\Clock\now;
 
 class BarokahPustakawanController extends Controller
 {
     public function index(Request $request)
     {
+        $now = Carbon::now();
 
-        $bulan = now()->format('m');  
-        $tahun = now()->format('Y');  
+        $bulan = $request->bulan ?? $now->month;
+        $tahun = $request->tahun ?? $now->year;
 
         $periode = sprintf('%04d-%02d', $tahun, $bulan);
 
-        /* =========================
-        1. AMBIL DATA PEGAWAI
-        ========================= */
-       $pegawai = DB::table('pegawais')
-            ->leftJoin('barokah_pustakawans', function ($join) use ($periode) {
-                $join->on('pegawais.id', '=', 'barokah_pustakawans.pegawai_id')
-                    ->where('barokah_pustakawans.periode', $periode);
-            })
-
-            ->leftJoin('barokah_rank_dosen as brd', function ($join) {
-                $join->on('brd.pendidikan_terakhir', '=', 'pegawais.pend_terakhir')
-                    ->whereRaw("
-                        brd.tahun = (
-                            SELECT MAX(tahun)
-                            FROM barokah_rank_dosen
-                            WHERE pendidikan_terakhir = pegawais.pend_terakhir
-                            AND tahun <= (YEAR(CURDATE()) - YEAR(pegawais.tmt_mengajar) + 1)
-                        )
-                    ");
-            })
-
-            ->select(
-                'pegawais.id',
-                'pegawais.nama_pegawai',
-                'pegawais.tmt_mengajar',
-                'pegawais.pend_terakhir',
-
-                DB::raw('(YEAR(CURDATE()) - YEAR(pegawais.tmt_mengajar) + 1) as tahun_mengajar'),
-
-                DB::raw('COALESCE(barokah_pustakawans.t_kehadiran, 0) as t_kehadiran'),
-                DB::raw('COALESCE(barokah_pustakawans.t_jabatan, 0) as t_jabatan'),
-                DB::raw('COALESCE(barokah_pustakawans.t_pengabdian, 0) as t_pengabdian'),
-                DB::raw('COALESCE(barokah_pustakawans.t_tunkel, 0) as t_tunkel'),
-                DB::raw('COALESCE(barokah_pustakawans.t_kehormatan, 0) as t_kehormatan'),
-                DB::raw('COALESCE(barokah_pustakawans.t_barokah_dosen, 0) as t_barokah_dosen'),
-                DB::raw('COALESCE(brd.t_rank_dosen, 0) as t_rank_dosen'),
-                DB::raw('COALESCE(barokah_pustakawans.t_anak, 0) as t_anak')
-            )
-            ->orderBy('pegawais.nama_pegawai')
+        $barokah = BarokahPustakawan::with('pegawai')
+            ->where('periode', $periode)
             ->get();
-
-
-        /* =========================
-        3. DATA MASTER
-        ========================= */
-        $bulan = now()->format('Y-m');
-
-        $barokahDomisili = TunjanganKehadiran::get();
-        $barokahJabatan  = TunjanganJabatan::get();
-        $barokahAnak     = Anak::get();
-        $tunkel          = Tunkel::get();
-        $berkah          = BarokahPustakawan::get();
-        $pengabdian      = TunjanganPengabdian::get();
-        $kehormatan      = Kehormatan::get();
-        $kehadiran       = TunjanganKehadiran::get();
-
-        /* =========================
-        4. RETURN VIEW
-        ========================= */
+        
         return view('admin.Kehadiran.barokah_pustakawan.barokah', compact(
-            'pegawai',
-            'barokahDomisili',
-            'barokahJabatan',
-            'barokahAnak',
-            'berkah',
-            'tunkel',
-            'kehormatan',
-            'pengabdian',
-            'kehadiran',
-            'bulan',
+            'barokah',
             'periode',
+            'bulan',
+            'tahun',
         ));
     }
 
@@ -107,10 +38,12 @@ class BarokahPustakawanController extends Controller
         // ===============================
         // PERIODE & APBM
         // ===============================
-        $periode = $request->bulan
-            ? Carbon::parse($request->bulan)->format('Y-m')
-            : now()->format('Y-m');
+        $now = Carbon::now();
 
+        $bulan = $request->bulan ?? $now->month;
+        $tahun = $request->tahun ?? $now->year;
+
+        $periode = Carbon::create($tahun, $bulan, 1)->format('Y-m');
         $apbm = $request->apbm ?? date('Y');
 
         // ===============================
@@ -133,25 +66,20 @@ class BarokahPustakawanController extends Controller
             ->value('tunjangan_anak') ?? 0;
 
         // ===============================
-        // DATA PEGAWAI
+        // QUERY PEGAWAI
         // ===============================
         $pegawai = DB::table('pegawais')
 
-            // === KEHADIRAN ===
             ->leftJoin('tunjangan_kehadirans as tk', function ($join) use ($apbm) {
                 $join->on('tk.tempatTinggal', '=', 'pegawais.domisili')
                     ->where('tk.APBM', $apbm);
             })
 
-            // === JABATAN ===
             ->leftJoin('tunjangan_jabatans as tj', function ($join) use ($apbm) {
                 $join->on('tj.nama_jabatan', '=', 'pegawais.nama_jabatan')
                     ->where('tj.APBM', $apbm);
             })
 
-            
-
-            // === BAROKAH RANK DOSEN ===
             ->leftJoin('barokah_rank_dosen as brd', function ($join) use ($apbm) {
                 $join->on('brd.pendidikan_terakhir', '=', 'pegawais.pend_terakhir')
                     ->where('brd.APBM', $apbm)
@@ -160,10 +88,10 @@ class BarokahPustakawanController extends Controller
                             SELECT MAX(tahun)
                             FROM barokah_rank_dosen
                             WHERE pendidikan_terakhir = pegawais.pend_terakhir
-                            AND APBM = {$apbm}
+                            AND APBM = ?
                             AND tahun <= (YEAR(CURDATE()) - YEAR(pegawais.tmt_mengajar) + 1)
                         )
-                    ");
+                    ", [$apbm]);
             })
 
             ->selectRaw("
@@ -187,7 +115,6 @@ class BarokahPustakawanController extends Controller
                 MAX(COALESCE(brd.t_rank_dosen, 0)) as t_rank_dosen
             ")
 
-
             ->groupBy(
                 'pegawais.id',
                 'pegawais.nama_pegawai',
@@ -200,62 +127,85 @@ class BarokahPustakawanController extends Controller
             ->orderBy('pegawais.nama_pegawai')
             ->get();
 
-        return view(
-            'admin.Kehadiran.barokah_pustakawan.barokah_generate',
-            compact('pegawai', 'periode', 'apbm')
-        );
+        $barokah = BarokahPustakawan::where('periode', $periode)
+            ->get()
+            ->keyBy('pegawai_id');
+
+
+        return view('admin.Kehadiran.barokah_pustakawan.barokah_generate', compact(
+            'pegawai',
+            'periode',
+            'apbm',
+            'barokah',
+        ));
     }
+
 
     
     public function store(Request $request)
     {
-        $request->validate([
-            'pegawai_id' => 'required|exists:pegawais,id',
-            'sks_dosen'  => 'nullable|numeric|min:0',
-        ]);
+        DB::beginTransaction();
 
-        $pegawai = Pegawai::findOrFail($request->pegawai_id);
+        try {
 
-        // default: barokah dosen = 0
-        $tBarokahDosen = 0;
+            $pegawaiData   = $request->pegawai ?? [];
+            $sksData       = $request->sks_dosen ?? [];
+            $periode       = $request->periode ?? now()->format('Y-m');
 
-        // HANYA hitung rank dosen jika punya TMT mengajar
-        if ($pegawai->tmt_mengajar) {
+            foreach ($pegawaiData as $pegawaiId => $data) {
 
-            $tmt = Carbon::parse($pegawai->tmt_mengajar)->startOfYear();
-            $sekarang = Carbon::now()->startOfYear();
-            $tahunMengajar = $tmt->diffInYears($sekarang) + 1;
+    $pegawai = Pegawai::find($pegawaiId);
+    if (!$pegawai) continue;
 
-            $rankDosen = DB::table('barokah_rank_dosen')
-                ->where('pendidikan_terakhir', $pegawai->pend_terakhir)
-                ->where('tahun', '<=', $tahunMengajar)
-                ->orderByDesc('tahun')
-                ->first();
+    $tBarokahDosen = 0;
 
-            if ($rankDosen) {
-                $sks = (int) ($request->sks_dosen ?? 0);
-                $tBarokahDosen = $sks * (int) $rankDosen->t_rank_dosen;
-            }
-            // ❗ kalau rank tidak ketemu → tetap 0 (tidak error)
+    if ($pegawai->tmt_mengajar) {
+
+        $tmt = Carbon::parse($pegawai->tmt_mengajar)->startOfYear();
+        $sekarang = Carbon::now()->startOfYear();
+        $tahunMengajar = $tmt->diffInYears($sekarang) + 1;
+
+        $rankDosen = DB::table('barokah_rank_dosen')
+            ->where('pendidikan_terakhir', $pegawai->pend_terakhir)
+            ->where('tahun', '<=', $tahunMengajar)
+            ->orderByDesc('tahun')
+            ->first();
+
+        if ($rankDosen) {
+            $sks = (int) ($sksData[$pegawaiId] ?? 0);
+            $tBarokahDosen = $sks * (int) $rankDosen->t_rank_dosen;
         }
-
-        // periode dari filter atau otomatis
-        $periode = $request->periode ?? now()->format('Y-m');
-
-        BarokahPustakawan::create([
-            'pegawai_id'        => $pegawai->id,
-            't_jabatan'         => $request->t_jabatan ?? 0,
-            't_pengabdian'      => $request->t_pengabdian ?? 0,
-            't_kehadiran'       => $request->t_kehadiran ?? 0,
-            't_tunkel'          => $request->t_tunkel ?? 0,
-            't_anak'            => $request->t_anak ?? 0,
-            't_kehormatan'      => $request->t_kehormatan ?? 0,
-            't_barokah_dosen'   => $tBarokahDosen, // 🔥 aman
-            'periode'           => $periode,
-        ]);
-
-        return back()->with('success', 'Data berhasil di-generate');
     }
+
+    BarokahPustakawan::updateOrCreate(
+        [
+            'pegawai_id' => $pegawaiId,
+            'periode'    => $periode,
+        ],
+        [
+            't_jabatan'       => (int) ($data['t_jabatan'] ?? 0),
+            't_pengabdian'    => (int) ($data['t_pengabdian'] ?? 0),
+            't_kehadiran'     => (int) ($data['t_kehadiran'] ?? 0),
+            't_tunkel'        => (int) ($data['t_tunkel'] ?? 0),
+            't_anak'          => (int) ($data['t_anak'] ?? 0),
+            't_kehormatan'    => (int) ($data['t_kehormatan'] ?? 0),
+            't_barokah_dosen' => $tBarokahDosen,
+        ]
+    );
+}
+
+
+            DB::commit();
+
+            return back()->with('success', 'Data barokah pustakawan berhasil disimpan.');
+
+        } catch (\Exception $e) {
+
+            DB::rollBack();
+            return back()->with('error', $e->getMessage());
+        }
+    }
+
 
     protected function tunjanganPengabdian(int $selisihTahun)
     {

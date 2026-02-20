@@ -60,7 +60,10 @@
                         <!--begin::Card title-->
                         <div class="card-title">
                             <!--end::Button filter-->
-                                <a href="admin/kehadiran-generate" class="btn btn-warning me-4">Generate</a>
+                                <a href="{{ route('kehadiran-generate', [
+                                    'bulan' => request('bulan', now()->month),
+                                    'tahun' => request('tahun', now()->year)
+                                ]) }}" class="btn btn-warning me-4">Generate</a>
                             <!--end::Button filter-->
                         </div>
                         <!--end::Card title-->
@@ -103,24 +106,23 @@
                             <thead class="fw-bold fs-5 bg-success">
                                 <tr class="text-white text-start fw-bold fs-7 text-uppercase gs-0">
                                     <th class="rounded-start ps-4"></th>
-                                    <th class="text-start min-w-10px">Nama</th>
+                                    <th class="text-start min-w-125px">Nama</th>
                                     <th class="text-center min-w-125px">Kehadiran</th>
                                     <th class="text-center min-w-125px">Jabatan</th>
-                                    <th class="text-center">Pengabdian</th>
-                                    <th class="text-center">Tunkel</th>
-                                    <th class="text-center">Kehormatan</th>
-                                    <th class="text-center">TBK</th>
-                                    <th class="text-center">Anak</th>
-                                    <th class="text-center min-w-10px rounded-end">Keterangan</th>
+                                    <th class="text-center min-w-125px">Pengabdian</th>
+                                    <th class="text-center min-w-125px">Tunkel</th>
+                                    <th class="text-center min-w-125px">Kehormatan</th>
+                                    <th class="text-center min-w-125px">TBK</th>
+                                    <th class="text-center min-w-125px rounded-end">Anak</th>
                                 </tr>
                             </thead>
                             <tbody class="text-gray-600 fw-semibold">
-                            @foreach ($pegawai as $item)
+                            @forelse ($barokah as $item)
                                 <tr>
                                     <td></td>
                                     <td class="text-start">
                                         <div class="px-4 py-3 badge fs-7 badge-light-success">
-                                            {{ $item->nama_pegawai }}
+                                            {{ $item->pegawai->nama_pegawai ?? '-' }}
                                         </div>
                                     </td>
                                     <td class="text-center">{{ number_format( $item->t_kehadiran, 0, ',', '.') }}</td>
@@ -130,29 +132,13 @@
                                     <td class="text-center">{{ number_format( $item->t_kehormatan, 0, ',', '.') }}</td>
                                     <td class="text-center">{{ number_format( $item->t_barokah_dosen, 0, ',', '.') }}</td>
                                     <td class="text-center">{{ number_format( $item->t_anak, 0, ',', '.') }}</td>
-                                    <td class="text-center pe-4">
-                                        <a href="#" class="btn btn-sm btn-light-primary btn-active-primary btn-flex btn-center" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Opsi
-                                        <i class="ki-outline ki-down fs-5 ms-1"></i></a>
-                                        <!--begin::Menu-->
-                                        <div class="py-4 menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px" data-kt-menu="true">
-                                            <!--begin::Menu item-->
-                                            <div class="px-3 menu-item">
-                                                <a class="px-3 menu-link" data-bs-toggle="modal" data-bs-target="#kt_modal_edit{{ $item->id }}">Tambah</a>
-                                            </div>
-                                            <!--end::Menu item-->
-                                            <!--begin::Menu item-->
-                                            <div class="px-3 menu-item">
-                                                <a class="px-3 menu-link" data-bs-toggle="modal" data-bs-target="#kt_modal_update{{ $item->id }}">Edit</a>
-                                            </div>
-                                            <!--end::Menu item-->
-                                        </div>
-                                        @include('admin.Kehadiran.barokah_pustakawan.tambah_barokah', [
-                                            'pegawaiModal' => $item
-                                        ])
-                                        <!--end::Menu-->
-                                    </td>
                                 </tr>
-                                @endforeach
+                                @empty
+                                <tr>
+                                    <td colspan="9" class="text-center">No available data in table</td>
+                                </tr>
+                                
+                            @endforelse
                             </tbody>
                         </table>
                         <!--end::Table-->

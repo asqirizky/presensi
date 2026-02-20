@@ -7,12 +7,7 @@ services:
     restart: unless-stopped
     working_dir: /var/www/html
     volumes:
-      # Mount hanya folder yang sering diubah saat development
-      - ./vendor:/var/www/html/vendor
-      - ./app:/var/www/html/app
-      - ./routes:/var/www/html/routes
-      - ./resources:/var/www/html/resources
-      - ./database:/var/www/html/database
+      - ./:/var/www/html
     networks:
       - laravel
     depends_on:
@@ -22,16 +17,16 @@ services:
   nginx:
     image: nginx:alpine
     container_name: laravel_nginx
+    restart: unless-stopped
     ports:
       - "8000:80"
     volumes:
-      - .:/var/www/html
+      - ./:/var/www/html
       - ./nginx/conf.d:/etc/nginx/conf.d
     depends_on:
       - app
     networks:
       - laravel
-
 
   mysql:
     image: mysql:8.0
@@ -71,3 +66,4 @@ networks:
 
 volumes:
   mysql_data:
+

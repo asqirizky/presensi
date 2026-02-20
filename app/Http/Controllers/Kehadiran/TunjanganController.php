@@ -167,6 +167,18 @@ class TunjanganController extends Controller
 
             return back()->with('success', 'Data berhasil disimpan');
         }
+
+        if ($request->is('admin/kehadiran-tunjangan-rankDosen')) {
+            
+            RankDosen::create([
+                'tahun' => $request->tahun,
+                'pendidikan_terakhir' => $request->pendidikan_terakhir,
+                'APBM' => $request->APBM,
+                't_rank_dosen' => $request->t_rank_dosen,
+            ]);
+
+            return back()->with('success', 'Data berhasil disimpan');
+        }
     }
 
     public function update(Request $request, $id) {
@@ -244,6 +256,20 @@ class TunjanganController extends Controller
                 'tunjangan_anak' => $request->tunjangan_anak,
                 'APBM' => $request->APBM,
             ]); 
+
+            return back()->with('success', 'Data berhasil diperbarui');
+        }
+
+        if ($request->is('admin/kehadiran-tunjangan-rankDosen/*')) {
+            
+            $rankDosen = RankDosen::findOrFail($id);
+
+            $rankDosen->update([
+                'tahun' => $request->tahun,
+                'pendidikan_terakhir' => $request->pendidikan_terakhir,
+                'APBM' => $request->APBM,
+                't_rank_dosen' => str_replace(',', '', $request->t_rank_dosen),
+            ]);
 
             return back()->with('success', 'Data berhasil diperbarui');
         }

@@ -618,7 +618,7 @@
                 });
             });
         </script>
-        // Script Maintenance
+		<!--beign::Script Maintenance-->
         <script>
             document.addEventListener('DOMContentLoaded', function () {
                 document.querySelectorAll('.maintenance').forEach(function (button) {
@@ -647,7 +647,39 @@
                 });
             });
         </script>
+		<!--end::Script Maintenance-->
+		<!--begin::Script Warning-->
+		<script>
+            document.addEventListener('DOMContentLoaded', function () {
+                document.querySelectorAll('.warning').forEach(function (button) {
+                    button.addEventListener('click', function (e) {
+                        e.preventDefault();
+                        const url = this.getAttribute('href'); // Ambil URL dari atribut href
 
+                        Swal.fire({
+                            title: 'Apakah Anda yakin?',
+                            text: "Setelah data ini disimpan tidak bisa diedit kembali!",
+                            icon: 'warning',
+                            showCancelButton: true,
+                            confirmButtonText: 'Ya, simpan!',
+                            cancelButtonText: 'Batal',
+                            customClass: {
+                                confirmButton: 'btn btn-danger', // Gaya tombol
+                                cancelButton: 'btn btn-secondary'
+                            },
+                            buttonsStyling: false
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                // Redirect ke URL untuk menghapus data
+                                window.location.href = url;
+                            }
+                        });
+                    });
+                });
+            });
+        </script>
+		<!--end::Javascript-->
+		
 		<!--begin::Javascript-->
 		<script>var hostUrl = "admin/assets/";</script>
 		<!--begin::Global Javascript Bundle(mandatory for all pages)-->

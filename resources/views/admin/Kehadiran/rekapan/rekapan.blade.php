@@ -71,7 +71,7 @@
                                         <button type="submit" class="btn btn-danger btn-md fw-bold">
                                             <i class="ki-outline ki-down-square me-1"></i>Cetak
                                         </button>
-                                        <a href="{{ route('kehadiran-barokah_pustakawan.index') }}" class="btn btn-warning btn-md fw-bold">Input Barokah</a>
+                                            <a href="{{ route('kehadiran-barokah_pustakawan.index') }}" class="btn btn-warning btn-md fw-bold">Input Barokah</a>
                                     </div>
                                 </form>
                             </div>
