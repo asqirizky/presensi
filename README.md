@@ -37,7 +37,7 @@ Check Version
 ## Running Project
 Open in terminal
 1. Clone Repository
-- git clone https://gitlab.com/asqirizky/project-presensi.git
+- git clone https://gitlab.com/asqirizky/presensi.git
 - cd project-presensi
 2. Copy File Environment
 - cp .env.example .env
