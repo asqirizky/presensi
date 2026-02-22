@@ -26,9 +26,7 @@
 		<!--begin::Global Stylesheets Bundle(mandatory for all pages)-->
 		<link href="admin/assets/plugins/global/plugins.bundle.css" rel="stylesheet" type="text/css" />
 		<link href="admin/assets/css/style.bundle.css" rel="stylesheet" type="text/css" />
-        {{-- <link rel="stylesheet" href="https://cdn.ckeditor.com/ckeditor5/43.2.0/ckeditor5.css" />
-        <link href="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.snow.css" rel="stylesheet">
-        <script src="https://cdn.jsdelivr.net/npm/quill@2.0.3/dist/quill.js"></script> --}}
+        
 
 
 
@@ -98,12 +96,12 @@
 							<div class="shrink-0 app-navbar">
                                 <div class="app-navbar-item ms-1 ms-md-4">
 									<!--begin::Menu wrapper-->
-                                    @php
+                                    <?php
                                         $hari = Carbon\Carbon::now()->isoFormat('dddd, D MMMM Y');
-                                    @endphp
+                                    ?>
                                     <span class="px-4 py-3 badge fs-7 badge-light-primary">
 										<span class="bullet bullet-dot bg-primary h-6px w-6px animation-blink me-2"></span>
-										<label class="">{{ $hari }} - </label>
+										<label class=""><?php echo e($hari); ?> - </label>
                                         <label id="clock" class="ms-2"></label>
                                     </span>
 									<!--end::Menu wrapper-->
@@ -156,7 +154,7 @@
 								<div class="app-navbar-item ms-1 ms-md-4" id="kt_header_user_menu_toggle">
 									<!--begin::Menu wrapper-->
 									<div class="cursor-pointer symbol symbol-35px" data-kt-menu-trigger="{default: 'click', lg: 'hover'}" data-kt-menu-attach="parent" data-kt-menu-placement="bottom-end">
-										<img src="storage/foto/{{ auth()->user()->foto }}" class="rounded-3" alt="user" />
+										<img src="storage/foto/<?php echo e(auth()->user()->foto); ?>" class="rounded-3" alt="user" />
 									</div>
 									<!--begin::User account menu-->
 									<div class="py-4 menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg menu-state-color fw-semibold fs-6 w-275px" data-kt-menu="true">
@@ -165,14 +163,15 @@
 											<div class="px-3 menu-content d-flex align-items-center">
 												<!--begin::Avatar-->
 												<div class="symbol symbol-50px me-5">
-													<img alt="Logo" src="storage/foto/{{ auth()->user()->foto }}" />
+													<img alt="Logo" src="storage/foto/<?php echo e(auth()->user()->foto); ?>" />
 												</div>
 												<!--end::Avatar-->
 												<!--begin::Username-->
 												<div class="d-flex flex-column">
-													<div class="fw-bold d-flex align-items-center fs-5">{{ auth()->user()->name }}
+													<div class="fw-bold d-flex align-items-center fs-5"><?php echo e(auth()->user()->name); ?>
+
 													<span class="px-2 py-1 badge badge-light-success fw-bold fs-8 ms-2">AKtif</span></div>
-													<a href="#" class="fw-semibold text-muted text-hover-primary fs-7">{{ auth()->user()->idstaf }}</a>
+													<a href="#" class="fw-semibold text-muted text-hover-primary fs-7"><?php echo e(auth()->user()->idstaf); ?></a>
 												</div>
 												<!--end::Username-->
 											</div>
@@ -189,7 +188,7 @@
 
 										<!--begin::Menu item-->
 										<div class="px-5 menu-item">
-											<a href="{{ route('logout') }}" class="px-5 menu-link">Keluar</a>
+											<a href="<?php echo e(route('logout')); ?>" class="px-5 menu-link">Keluar</a>
 										</div>
 										<!--end::Menu item-->
 									</div>
@@ -252,7 +251,7 @@
 									<div class="menu menu-column menu-rounded menu-sub-indention fw-semibold fs-6" id="#kt_app_sidebar_menu" data-kt-menu="true" data-kt-menu-expand="false">
 										<!--begin:Menu item-->
 										<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-                                            <a class="menu-link {{ request()->is('admin/home') ? 'active' : ''}}" href="admin/home">
+                                            <a class="menu-link <?php echo e(request()->is('admin/home') ? 'active' : ''); ?>" href="admin/home">
                                                 <span class="menu-icon">
 													<i class="ki-outline ki-home fs-2"></i>
 												</span>
@@ -270,7 +269,7 @@
 										</div>
 
 
-                                        @php
+                                        <?php
                                         $kehadiranPermissions = [
                                             'kehadiran hadir-lihat',
                                             'kehadiran pegawai-lihat',
@@ -284,10 +283,10 @@
                                         ];
 
                                         $kehadiranActive = request()->is('admin/kehadiran-*');
-                                        @endphp
+                                        ?>
 
-                                        @canany($kehadiranPermissions)
-                                        <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ $kehadiranActive ? 'here show' : '' }}">
+                                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any($kehadiranPermissions)): ?>
+                                        <div data-kt-menu-trigger="click" class="menu-item menu-accordion <?php echo e($kehadiranActive ? 'here show' : ''); ?>">
                                             <span class="menu-link">
                                                 <span class="menu-icon">
                                                     <i class="ki-outline ki-calendar-tick fs-2"></i>
@@ -296,77 +295,77 @@
                                                 <span class="menu-arrow"></span>
                                             </span>
                                             <div class="menu-sub menu-sub-accordion">
-                                                @can('kehadiran hadir-lihat')
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('kehadiran hadir-lihat')): ?>
                                                 <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/kehadiran-hadir') ? 'active' : '' }}" href="admin/kehadiran-hadir">
+                                                    <a class="menu-link <?php echo e(request()->is('admin/kehadiran-hadir') ? 'active' : ''); ?>" href="admin/kehadiran-hadir">
                                                         <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
                                                         <span class="menu-title">Absen Room</span>
                                                     </a>
                                                 </div>
-                                                @endcan
-                                                @can('kehadiran pegawai-lihat')
+                                                <?php endif; ?>
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('kehadiran pegawai-lihat')): ?>
                                                 <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/kehadiran-pegawai') ? 'active' : '' }}" href="admin/kehadiran-pegawai">
+                                                    <a class="menu-link <?php echo e(request()->is('admin/kehadiran-pegawai') ? 'active' : ''); ?>" href="admin/kehadiran-pegawai">
                                                         <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
                                                         <span class="menu-title">Pegawai</span>
                                                     </a>
                                                 </div>
-                                                @endcan
-                                                @can('kehadiran jadwal-lihat')
+                                                <?php endif; ?>
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('kehadiran jadwal-lihat')): ?>
                                                 <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/kehadiran-jadwal') ? 'active' : '' }}" href="admin/kehadiran-jadwal">
+                                                    <a class="menu-link <?php echo e(request()->is('admin/kehadiran-jadwal') ? 'active' : ''); ?>" href="admin/kehadiran-jadwal">
                                                         <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
                                                         <span class="menu-title">Jadwal</span>
                                                     </a>
                                                 </div>
-                                                @endcan
-                                                @can('kehadiran izin-lihat')
+                                                <?php endif; ?>
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('kehadiran izin-lihat')): ?>
                                                 <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/kehadiran-izin') ? 'active' : '' }}" href="admin/kehadiran-izin">
+                                                    <a class="menu-link <?php echo e(request()->is('admin/kehadiran-izin') ? 'active' : ''); ?>" href="admin/kehadiran-izin">
                                                         <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
                                                         <span class="menu-title">Izin</span>
                                                     </a>
                                                 </div>
-                                                @endcan
-                                                @can('kehadiran libur-lihat')
+                                                <?php endif; ?>
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('kehadiran libur-lihat')): ?>
                                                 <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/kehadiran-libur') ? 'active' : '' }}" href="admin/kehadiran-libur">
+                                                    <a class="menu-link <?php echo e(request()->is('admin/kehadiran-libur') ? 'active' : ''); ?>" href="admin/kehadiran-libur">
                                                         <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
                                                         <span class="menu-title">Libur</span>
                                                     </a>
                                                 </div>
-                                                @endcan
-                                                @can('kehadiran jabatan-lihat')
+                                                <?php endif; ?>
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('kehadiran jabatan-lihat')): ?>
                                                 <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/kehadiran-jabatan') ? 'active' : '' }}" href="admin/kehadiran-jabatan">
+                                                    <a class="menu-link <?php echo e(request()->is('admin/kehadiran-jabatan') ? 'active' : ''); ?>" href="admin/kehadiran-jabatan">
                                                         <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
                                                         <span class="menu-title">Jabatan</span>
                                                     </a>
                                                 </div>
-                                                @endcan
-                                                @can('kehadiran tunjangan-lihat')
+                                                <?php endif; ?>
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('kehadiran tunjangan-lihat')): ?>
                                                 <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/kehadiran-tunjangan') ? 'active' : '' }}" href="admin/kehadiran-tunjangan">
+                                                    <a class="menu-link <?php echo e(request()->is('admin/kehadiran-tunjangan') ? 'active' : ''); ?>" href="admin/kehadiran-tunjangan">
                                                         <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
                                                         <span class="menu-title">Tunjangan</span>
                                                     </a>
                                                 </div>
-                                                @endcan
-                                                @can('kehadiran rekapan-lihat')
+                                                <?php endif; ?>
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('kehadiran rekapan-lihat')): ?>
                                                 <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/kehadiran-rekapan') ? 'active' : '' }}" href="admin/kehadiran-rekapan">
+                                                    <a class="menu-link <?php echo e(request()->is('admin/kehadiran-rekapan') ? 'active' : ''); ?>" href="admin/kehadiran-rekapan">
                                                         <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
                                                         <span class="menu-title">Rekap</span>
                                                     </a>
                                                 </div>
-                                                @endcan
+                                                <?php endif; ?>
 
                                             </div>
                                         </div>
-                                        @endcanany
+                                        <?php endif; ?>
 
 
-                                        @php
+                                        <?php
                                             $absenPermission = [
                                                 'absen absen-lihat',
                                                 'absen barokah-lihat',
@@ -379,10 +378,10 @@
                                             ];
 
                                             $absenActive = request()->is('admin/absensi-*');
-                                        @endphp
+                                        ?>
 
-                                        @canany($absenPermission)
-                                        <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ $absenActive ? 'here show' : '' }}">
+                                        <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->any($absenPermission)): ?>
+                                        <div data-kt-menu-trigger="click" class="menu-item menu-accordion <?php echo e($absenActive ? 'here show' : ''); ?>">
                                             <span class="menu-link">
                                                 <span class="menu-icon">
                                                     <i class="ki-outline ki-user-tick fs-2"></i>
@@ -391,66 +390,66 @@
                                                 <span class="menu-arrow"></span>
                                             </span>
                                             <div class="menu-sub menu-sub-accordion">
-                                                @can('absen khidmah-lihat')
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('absen khidmah-lihat')): ?>
                                                 <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/absensi-khidmah') ? 'active' : '' }}" href="admin/absensi-khidmah">
+                                                    <a class="menu-link <?php echo e(request()->is('admin/absensi-khidmah') ? 'active' : ''); ?>" href="admin/absensi-khidmah">
                                                         <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
                                                         <span class="menu-title">Khidmah</span>
                                                     </a>
                                                 </div>
-                                                @endcan
-                                                @can('absen izin-lihat')
+                                                <?php endif; ?>
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('absen izin-lihat')): ?>
                                                 <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/absensi-izin') ? 'active' : '' }}" href="admin/absensi-izin">
+                                                    <a class="menu-link <?php echo e(request()->is('admin/absensi-izin') ? 'active' : ''); ?>" href="admin/absensi-izin">
                                                         <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
                                                         <span class="menu-title">Izin</span>
                                                     </a>
                                                 </div>
-                                                @endcan
-                                                @can('absen libur-lihat')
+                                                <?php endif; ?>
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('absen libur-lihat')): ?>
                                                 <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/absensi-libur') ? 'active' : '' }}" href="admin/absensi-libur">
+                                                    <a class="menu-link <?php echo e(request()->is('admin/absensi-libur') ? 'active' : ''); ?>" href="admin/absensi-libur">
                                                         <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
                                                         <span class="menu-title">Libur</span>
                                                     </a>
                                                 </div>
-                                                @endcan
-                                                @can('absen shift-lihat')
+                                                <?php endif; ?>
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('absen shift-lihat')): ?>
                                                 <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/absensi-shift') ? 'active' : '' }}" href="admin/absensi-shift">
+                                                    <a class="menu-link <?php echo e(request()->is('admin/absensi-shift') ? 'active' : ''); ?>" href="admin/absensi-shift">
                                                         <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
                                                         <span class="menu-title">Shift</span>
                                                     </a>
                                                 </div>
-                                                @endcan
-                                                @can('absen lokasi-lihat')
+                                                <?php endif; ?>
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('absen lokasi-lihat')): ?>
                                                 <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/absensi-lokasi') ? 'active' : '' }}" href="admin/absensi-lokasi">
+                                                    <a class="menu-link <?php echo e(request()->is('admin/absensi-lokasi') ? 'active' : ''); ?>" href="admin/absensi-lokasi">
                                                         <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
                                                         <span class="menu-title">Lokasi</span>
                                                     </a>
                                                 </div>
-                                                @endcan
-                                                @can('absen barokah-lihat')
+                                                <?php endif; ?>
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('absen barokah-lihat')): ?>
                                                 <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/absensi-barokah') ? 'active' : '' }}" href="admin/absensi-barokah">
+                                                    <a class="menu-link <?php echo e(request()->is('admin/absensi-barokah') ? 'active' : ''); ?>" href="admin/absensi-barokah">
                                                         <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
                                                         <span class="menu-title">Barokah</span>
                                                     </a>
                                                 </div>
-                                                @endcan
-                                                @can('absen rekap-lihat')
+                                                <?php endif; ?>
+                                                <?php if (app(\Illuminate\Contracts\Auth\Access\Gate::class)->check('absen rekap-lihat')): ?>
                                                 <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/absensi-rekap') ? 'active' : '' }}" href="admin/absensi-rekap">
+                                                    <a class="menu-link <?php echo e(request()->is('admin/absensi-rekap') ? 'active' : ''); ?>" href="admin/absensi-rekap">
                                                         <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
                                                         <span class="menu-title">Rekap</span>
                                                     </a>
                                                 </div>
-                                                @endcan
+                                                <?php endif; ?>
 
                                             </div>
                                         </div>
-                                        @endcanany
+                                        <?php endif; ?>
 
 										<div class="pt-5 menu-item">
 											<!--begin:Menu content-->
@@ -483,13 +482,13 @@
 											<!--end:Menu content-->
 										</div>
 
-                                        @if(auth()->user()->hasPermissionTo('pengguna-lihat') || auth()->user()->hasPermissionTo('akses pengguna-lihat'))
+                                        <?php if(auth()->user()->hasPermissionTo('pengguna-lihat') || auth()->user()->hasPermissionTo('akses pengguna-lihat')): ?>
                                         <!--begin:Menu item-->
-                                        @if(request()->is('admin/pengguna') || request()->is('admin/pengguna-akses'))
+                                        <?php if(request()->is('admin/pengguna') || request()->is('admin/pengguna-akses')): ?>
 										<div data-kt-menu-trigger="click" class="menu-item here show menu-accordion">
-                                        @else
+                                        <?php else: ?>
 										<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-                                        @endif
+                                        <?php endif; ?>
 											<!--begin:Menu link-->
 											<span class="menu-link">
 												<span class="menu-icon">
@@ -502,10 +501,10 @@
 											<!--begin:Menu sub-->
 											<div class="menu-sub menu-sub-accordion">
 												<!--begin:Menu item-->
-                                                @if(auth()->user()->hasPermissionTo('pengguna-lihat'))
+                                                <?php if(auth()->user()->hasPermissionTo('pengguna-lihat')): ?>
 												<div class="menu-item">
 													<!--begin:Menu link-->
-													<a class="menu-link {{ request()->is('admin/pengguna') ? 'active' : ''}}" href="admin/pengguna">
+													<a class="menu-link <?php echo e(request()->is('admin/pengguna') ? 'active' : ''); ?>" href="admin/pengguna">
 														<span class="menu-bullet">
 															<span class="bullet bullet-dot"></span>
 														</span>
@@ -513,13 +512,13 @@
 													</a>
 													<!--end:Menu link-->
 												</div>
-                                                @endif
+                                                <?php endif; ?>
 												<!--end:Menu item-->
 												<!--begin:Menu item-->
-                                                @if(auth()->user()->hasPermissionTo('akses pengguna-lihat'))
+                                                <?php if(auth()->user()->hasPermissionTo('akses pengguna-lihat')): ?>
 												<div class="menu-item">
 													<!--begin:Menu link-->
-													<a class="menu-link {{ request()->is('admin/pengguna-akses') ? 'active' : ''}}" href="admin/pengguna-akses">
+													<a class="menu-link <?php echo e(request()->is('admin/pengguna-akses') ? 'active' : ''); ?>" href="admin/pengguna-akses">
 														<span class="menu-bullet">
 															<span class="bullet bullet-dot"></span>
 														</span>
@@ -527,12 +526,12 @@
 													</a>
 													<!--end:Menu link-->
 												</div>
-                                                @endif
+                                                <?php endif; ?>
 												<!--end:Menu item-->
 											</div>
 											<!--end:Menu sub-->
 										</div>
-                                        @endif
+                                        <?php endif; ?>
 										<!--end:Menu item-->
 									</div>
 									<!--end::Menu-->
@@ -548,11 +547,11 @@
 					</div>
 					<!--end::Sidebar-->
 					<!--begin::Main-->
-					@if (config('app.debug'))
+					<?php if(config('app.debug')): ?>
 						<div class="px-4 py-3 text-center text-white maintenance-alert">
 							⚠️ Sistem sedang dalam masa perbaikan (maintenance). Beberapa fitur mungkin tidak berjalan dengan normal.
 						</div>
-					@endif
+					<?php endif; ?>
 
 					<style>
 						.maintenance-alert {
@@ -573,7 +572,7 @@
 						}
 					</style>
 
-					@yield('admin-konten')
+					<?php echo $__env->yieldContent('admin-konten'); ?>
 					<!--end:::Main-->
 				</div>
 				<!--end::Wrapper-->
@@ -581,11 +580,11 @@
 			<!--end::Page-->
 		</div>
 		<!--end::App-->
-        @if (session('success'))
+        <?php if(session('success')): ?>
         <script>
             Swal.fire({
                 title: 'Alhamdulillah!',
-                text: '{{ session('success') }}',
+                text: '<?php echo e(session('success')); ?>',
                 icon: 'success',
                 confirmButtonText: 'OK',
                 customClass: {
@@ -594,12 +593,12 @@
                 buttonsStyling: false
             });
         </script>
-        @endif
-        @if (session('error'))
+        <?php endif; ?>
+        <?php if(session('error')): ?>
         <script>
             Swal.fire({
                 title: 'Astaghfirullah!',
-                text: '{{ session('error') }}',
+                text: '<?php echo e(session('error')); ?>',
                 icon: 'error',
                 confirmButtonText: 'OK',
                 customClass: {
@@ -608,7 +607,7 @@
                 buttonsStyling: false
             });
         </script>
-        @endif
+        <?php endif; ?>
         // Script Delete Button
         <script>
             document.addEventListener('DOMContentLoaded', function () {
@@ -724,15 +723,16 @@
         <script src="admin/assets/plugins/custom/ckeditor/ckeditor-classic.bundle.js"></script>
 		<!--end::Vendors Javascript-->
 		<!--begin::Custom Javascript(used for this page only)-->
-		<script src="{{ asset('admin/assets/js/jam.js') }}"></script>
-		<script src="{{ asset('admin/assets/js/custom/widgets.js') }}"></script>
-		<script src="{{ asset('admin/assets/js/custom/widgets.js') }}"></script>
-		<script src="{{ asset('admin/assets/js/custom/apps/chat/chat.js') }}"></script>
-		<script src="{{ asset('admin/assets/js/custom/utilities/modals/upgrade-plan.js') }}"></script>
-		<script src="{{ asset('admin/assets/js/custom/utilities/modals/create-app.js') }}"></script>
-		<script src="{{ asset('admin/assets/js/custom/utilities/modals/users-search.js') }}"></script>
+		<script src="<?php echo e(asset('admin/assets/js/jam.js')); ?>"></script>
+		<script src="<?php echo e(asset('admin/assets/js/custom/widgets.js')); ?>"></script>
+		<script src="<?php echo e(asset('admin/assets/js/custom/widgets.js')); ?>"></script>
+		<script src="<?php echo e(asset('admin/assets/js/custom/apps/chat/chat.js')); ?>"></script>
+		<script src="<?php echo e(asset('admin/assets/js/custom/utilities/modals/upgrade-plan.js')); ?>"></script>
+		<script src="<?php echo e(asset('admin/assets/js/custom/utilities/modals/create-app.js')); ?>"></script>
+		<script src="<?php echo e(asset('admin/assets/js/custom/utilities/modals/users-search.js')); ?>"></script>
 		<!--end::Custom Javascript-->
 		<!--end::Javascript-->
 	</body>
 	<!--end::Body-->
 </html>
+<?php /**PATH /var/www/html/resources/views/layout/sidebarnavbar.blade.php ENDPATH**/ ?>

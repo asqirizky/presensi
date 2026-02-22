@@ -1,6 +1,4 @@
-@extends('layout.sidebarnavbar')
-{{-- @extends('layouts.app') --}}
-@section('admin-konten')
+<?php $__env->startSection('admin-konten'); ?>
 
 <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
     <!--begin::Content wrapper-->
@@ -33,7 +31,7 @@
                     <!--end::Breadcrumb-->
                 </div>
                 <!--end::Page title-->
-                @include('layout.preview')
+                <?php echo $__env->make('layout.preview', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
             </div>
             <!--end::Toolbar container-->
         </div>
@@ -81,7 +79,7 @@
                                                 <!--begin::Stats-->
                                                 <div class="m-0">
                                                     <!--begin::Number-->
-                                                    <span class="text-gray-700 fw-bolder d-block fs-2qx lh-1 ls-n1 mb-1">{{ App\Models\Aset\Aset_gedung::count() }}</span>
+                                                    <span class="text-gray-700 fw-bolder d-block fs-2qx lh-1 ls-n1 mb-1"><?php echo e(App\Models\Aset\Aset_gedung::count()); ?></span>
                                                     <!--end::Number-->
                                                     <!--begin::Desc-->
                                                     <span class="text-gray-500 fw-semibold fs-6">Gedung</span>
@@ -106,7 +104,7 @@
                                                 <!--begin::Stats-->
                                                 <div class="m-0">
                                                     <!--begin::Number-->
-                                                    <span class="text-gray-700 fw-bolder d-block fs-2qx lh-1 ls-n1 mb-1">{{ App\Models\Aset\Aset_lokasi::count() }}</span>
+                                                    <span class="text-gray-700 fw-bolder d-block fs-2qx lh-1 ls-n1 mb-1"><?php echo e(App\Models\Aset\Aset_lokasi::count()); ?></span>
                                                     <!--end::Number-->
                                                     <!--begin::Desc-->
                                                     <span class="text-gray-500 fw-semibold fs-6">Ruang</span>
@@ -131,7 +129,7 @@
                                                 <!--begin::Stats-->
                                                 <div class="m-0">
                                                     <!--begin::Number-->
-                                                    <span class="text-gray-700 fw-bolder d-block fs-2qx lh-1 ls-n1 mb-1">{{ App\Models\Aset\Aset::count() }}</span>
+                                                    <span class="text-gray-700 fw-bolder d-block fs-2qx lh-1 ls-n1 mb-1"><?php echo e(App\Models\Aset\Aset::count()); ?></span>
                                                     <!--end::Number-->
                                                     <!--begin::Desc-->
                                                     <span class="text-gray-500 fw-semibold fs-6">Jenis Barang</span>
@@ -156,7 +154,7 @@
                                                 <!--begin::Stats-->
                                                 <div class="m-0">
                                                     <!--begin::Number-->
-                                                    <span class="text-gray-700 fw-bolder d-block fs-2qx lh-1 ls-n1 mb-1">{{ App\Models\Aset\Aset_unit::count() }}</span>
+                                                    <span class="text-gray-700 fw-bolder d-block fs-2qx lh-1 ls-n1 mb-1"><?php echo e(App\Models\Aset\Aset_unit::count()); ?></span>
                                                     <!--end::Number-->
                                                     <!--begin::Desc-->
                                                     <span class="text-gray-500 fw-semibold fs-6">Unit</span>
@@ -232,7 +230,7 @@
                                                             <!--begin::Item-->
                                                             <div class="m-0">
                                                                 <!--begin::Number-->
-                                                                <span class="text-gray-700 fw-bolder d-block fs-1 lh-1 ls-n1 mb-1">{{ App\Models\Berita::count() }}</span>
+                                                                <span class="text-gray-700 fw-bolder d-block fs-1 lh-1 ls-n1 mb-1"><?php echo e(App\Models\Berita::count()); ?></span>
                                                                 <!--end::Number-->
                                                             </div>
                                                             <!--end::Item-->
@@ -265,9 +263,9 @@
                                                             <!--begin::Item-->
                                                             <div class="m-0">
                                                                 <!--begin::Number-->
-                                                                <span class="text-gray-700 fw-bolder d-block fs-1 lh-1 ls-n1 mb-1">{{ App\Models\Resource::count() / 27 * 100 }}%</span>
+                                                                <span class="text-gray-700 fw-bolder d-block fs-1 lh-1 ls-n1 mb-1"><?php echo e(App\Models\Resource::count() / 27 * 100); ?>%</span>
                                                                 <!--end::Number-->
-                                                                <span class="text-gray-500 fw-semibold fs-6">{{ App\Models\Resource::count() }} dari 27 Prodi</span>
+                                                                <span class="text-gray-500 fw-semibold fs-6"><?php echo e(App\Models\Resource::count()); ?> dari 27 Prodi</span>
                                                             </div>
                                                             <!--end::Item-->
                                                         </div>
@@ -301,7 +299,7 @@
                                                             <!--begin::Item-->
                                                             <div class="m-0">
                                                                 <!--begin::Number-->
-                                                                <span class="text-gray-700 fw-bolder d-block fs-1 lh-1 ls-n1 mb-1">{{ App\Models\Kegiatan::count() }}</span>
+                                                                <span class="text-gray-700 fw-bolder d-block fs-1 lh-1 ls-n1 mb-1"><?php echo e(App\Models\Kegiatan::count()); ?></span>
                                                                 <!--end::Number-->
                                                             </div>
                                                             <!--end::Item-->
@@ -336,7 +334,7 @@
                                                             <!--begin::Item-->
                                                             <div class="m-0">
                                                                 <!--begin::Number-->
-                                                                <span class="text-gray-700 fw-bolder d-block fs-1 lh-1 ls-n1 mb-1">{{ App\Models\Buletin::count() }}</span>
+                                                                <span class="text-gray-700 fw-bolder d-block fs-1 lh-1 ls-n1 mb-1"><?php echo e(App\Models\Buletin::count()); ?></span>
                                                                 <!--end::Number-->
                                                             </div>
                                                             <!--end::Item-->
@@ -407,7 +405,7 @@
                                                             <!--begin::Item-->
                                                             <div class="m-0">
                                                                 <!--begin::Number-->
-                                                                <span class="text-gray-700 fw-bolder d-block fs-1 lh-1 ls-n1 mb-1">{{ App\Models\Kehadiran\Pegawai::count() }}</span>
+                                                                <span class="text-gray-700 fw-bolder d-block fs-1 lh-1 ls-n1 mb-1"><?php echo e(App\Models\Kehadiran\Pegawai::count()); ?></span>
                                                                 <!--end::Number-->
                                                             </div>
                                                             <!--end::Item-->
@@ -604,8 +602,10 @@
     </div>
     <!--end::Content wrapper-->
 
-    @include('layout.footer')
+    <?php echo $__env->make('layout.footer', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     <!--end::Footer-->
 </div>
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layout.sidebarnavbar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/admin/home.blade.php ENDPATH**/ ?>
