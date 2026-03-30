@@ -16,6 +16,7 @@ class PustakawanController extends Controller
     public function index()
     {
         $pustakawan = Pustakawan::join('jabatans', 'pustakawans.jabatan_id', '=', 'jabatans.id')
+            ->where('pustakawans.status', 1) // tampilkan sesuai status aktif
             ->orderBy('jabatans.eselon', 'asc') // urut berdasarkan eselon
             ->select('pustakawans.*') // biar tidak bentrok kolom
             ->get();
