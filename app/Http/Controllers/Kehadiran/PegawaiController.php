@@ -2,21 +2,20 @@
 
 namespace App\Http\Controllers\Kehadiran;
 
-use Carbon\Carbon;
+use App\Http\Controllers\Controller;
+use App\Models\Absensi\Shift;
+use App\Models\District;
+use App\Models\Kehadiran\Jabatan;
+use App\Models\Kehadiran\Jadwal;
+use App\Models\Kehadiran\Pegawai;
+use App\Models\Kehadiran\PegawaiJadwal;
+use App\Models\Kehadiran\Ruang;
+use App\Models\Province;
 use App\Models\Regency;
 use App\Models\Village;
-use App\Models\District;
-use App\Models\Province;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Models\Absensi\Shift;
-use App\Models\Kehadiran\Jadwal;
-use App\Models\Kehadiran\Jabatan;
-use App\Models\Kehadiran\Pegawai;
-use App\Models\Kehadiran\Domisili;
 use Illuminate\Support\Facades\DB;
-use App\Http\Controllers\Controller;
-use App\Models\Kehadiran\JadwalPegawai;
-use App\Models\Kehadiran\PegawaiJadwal;
 use Illuminate\Support\Facades\Storage;
 
 class PegawaiController extends Controller
@@ -26,8 +25,13 @@ class PegawaiController extends Controller
 
         $pegawai = Pegawai::all();
         $jabatan = Jabatan::where('status', 1)->get();
+        $ruangs = Ruang::get();
 
-        return view('admin.Kehadiran.pegawai.pegawai', compact('pegawai', 'jabatan'));
+        return view('admin.Kehadiran.pegawai.pegawai', compact(
+            'pegawai',
+            'jabatan',
+            'ruangs',
+        ));
     }
 
     public function tambah()
@@ -40,6 +44,7 @@ class PegawaiController extends Controller
 
         $pegawai = Pegawai::findOrFail($id);
         $jabatan = Jabatan::where('status', 1)->get();
+        $ruangs = Ruang::get();
 
         $hariList = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu'];
         $shiftList = [
@@ -62,7 +67,8 @@ class PegawaiController extends Controller
             'hariList',
             'shiftList',
             'jadwalAktif',
-            'jabatan'
+            'jabatan',
+            'ruangs',
         ));
     }
 
@@ -214,7 +220,7 @@ class PegawaiController extends Controller
                 'status_perkawinan' => $request->status_perkawinan,
                 'status' => $request->has('status') ? '1' :  '0',
                 'jabatan' => $request->jabatan,
-                'ruang' => $request->ruang,
+                'ruang_id' => $request->ruang_id,
             ]);
         } else {
             $pegawai->update([
@@ -228,7 +234,7 @@ class PegawaiController extends Controller
                 'status_perkawinan' => $request->status_perkawinan,
                 'status' => $request->has('status') ? '1' :  '0',
                 'jabatan' => $request->jabatan,
-                'ruang' => $request->ruang,
+                'ruang_id' => $request->ruang_id,
             ]);
         }
 

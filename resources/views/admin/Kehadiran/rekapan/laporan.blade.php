@@ -188,7 +188,7 @@
         <h2>BAROKAH UMANA <br>PERPPUSTAKAAN IBRAHIMY <br>TAHUN {{ $tahun }}</h2>
         <p class="nama-bulan">Bulan : {{ $namaBulan }}</p>
 
-         <table class="rekap">
+        <table class="rekap">
             <thead>
                 <!-- BARIS HEADER PERTAMA -->
                 <tr class="pertama">
@@ -208,7 +208,7 @@
                     <th rowspan="2" class="ket">S</th>
                     <th rowspan="2" class="ket">A</th>
                     <th rowspan="2" class="ket">%</th>
-
+                    
                 </tr>
 
                 <!-- BARIS HEADER KEDUA (SUB KATEGORI BAROKAH) -->
@@ -238,7 +238,7 @@
                     $jumlahHadirPagi = 0;
                     $jumlahHadirSiang = 0;
                     $jumlahHadirMalam = 0;
-
+                    
                     $totalBarokahJabatan = 0;
                     $barokahJabatanFinal = 0;
 
@@ -321,29 +321,30 @@
                     $totalS = 0;
                     $totalT = 0;
                     $totalA = 0;
+                    $totalL = 0;
 
                     foreach ($dates as $tanggal) {
 
                     $hari = Carbon::parse($tanggal)->translatedFormat('l');
                     $jadwalHari = $jadwalPegawai->firstWhere('hari', $hari);
-
+                
                     if (!$jadwalHari) continue;
-
+                
                     foreach (['pagi', 'siang', 'malam'] as $shift) {
-
+                
                         // tidak ada jadwal shift
                         if ($jadwalHari->$shift != 1) continue;
-
+                
                         // cek libur
                         $isLibur = false;
                         foreach ($liburByDateShift[$tanggal] ?? [] as $l) {
-                            if ($l['ruang'] === 'Semua Ruang') {
+                            if ($l['ruang_id'] === 'Semua Ruang') {
                                 $isLibur = true;
                                 break;
                             }
                         }
                         if ($isLibur) continue;
-
+                
                         // =====================
                         // CEK HADIR PER SHIFT
                         // =====================
@@ -351,23 +352,22 @@
                             ->whereDate('tanggal', $tanggal)
                             ->where('shift', $shift) //
                             ->exists();
-
+                
                         // =====================
                         // CEK IZIN PER SHIFT
                         // =====================
                         $izin = $izinPegawai[$p->nama_pegawai][$tanggal] ?? null;
-                        $izinShift = ($izin && ($izin[$shift] ?? 0) == 1)
-                            ? $izin['ket']
-                            : null;
-
+                        $izinShift = $izinPegawai[$p->nama_pegawai][$tanggal][$shift]['ket'] ?? null;
+                
                         if ($hadir) {
                             continue; // hadir = tidak dihitung ISTA
                         }
-
+                
                         if ($izinShift) {
                             if ($izinShift === 'I') $totalI++;
                             elseif ($izinShift === 'S') $totalS++;
                             elseif ($izinShift === 'T') $totalT++;
+                            elseif ($izinShift === 'L') $totalL++;
                         } else {
                             $totalA++; // alfa murni
                         }
@@ -418,7 +418,7 @@
                     } else {
                         $barokahJabatanFinal = $p->t_jabatan;
                     }
-
+                    
                     $totalBarokahJabatan += $barokahJabatanFinal;
 
 
@@ -438,6 +438,8 @@
 
 
                     $totalKehadiran = $p->t_kehadiran * $jumlahHadir;
+                    
+
 
                     $totalKehadiran = $p->t_kehadiran * $jumlahHadir;
                     $totalSemuaKehadiran += $totalKehadiran;
@@ -449,11 +451,11 @@
                         $masa_kerja += 1;
                     }
 
-                    $mp = ($periode - Carbon::parse($p->tmt)->year) + 1;
+                    $mp = ($periode - Carbon::parse($p->tmt)->year)+1;
                     $TMT = floor($mp / 3);
                     $TMT2 = $TMT * $p->t_pengabdian;
                     $kehormatan = floor($mp / 5)*$p->t_kehormatan;
-
+                    
                     $jumlahSeluruhnya =
                         $barokahJabatanFinal
                         + $TMT2
@@ -462,15 +464,14 @@
                         + $p->t_anak
                         + $p->t_barokah_dosen
                         + $kehormatan;
-
                 @endphp
                 <tr>
                     <td class="tengah">{{ $index+1 }}</td>
                     <td class="kiri">{{ $p->nama_pegawai }}</td>
-                    <td class="kiri">{{ $p->nama_jabatan }}</td>
+                    <td class="kiri">{{ $p->jabatan->nama_jabatan }}</td>
                     <td class="tengah">{{ Carbon::parse($p->tmt)->isoFormat('Y') }}</td>
                     <td class="tengah">{{ $mp }}</td>
-
+                    
 
                     <td>{{ number_format($barokahJabatanFinal ?? 0, 0, ',', '.') }}</td>
                     <td>{{ number_format($TMT2 ?? 0, 0, ',', '.') }}</td>
@@ -512,7 +513,7 @@
                     <td>{{ number_format($t_pengabdian, 0, ',','.') }}</td>
                     <td>{{ number_format($totalSemuaKehadiran, 0, ',', '.') }}</td>
                     <td>{{ number_format($pegawai->sum('t_tunkel'), 0, ',', '.') }}</td>
-                    <td>{{ number_format($pegawai->sum('t_a nak'), 0, ',', '.') }}</td>
+                    <td>{{ number_format($pegawai->sum('t_anak'), 0, ',', '.') }}</td>
                     <td>{{ number_format($pegawai->sum('t_barokah_dosen'), 0, ',', '.') }}</td>
                     <td>{{ number_format($t_kehormatan, 0, ',', '.') }}</td>
 
@@ -522,7 +523,7 @@
             </tbody>
         </table>
 
-
+  
         <div style="position: fixed; bottom: 10px; left: 20px; font-size: 8pt;">
             <b>Download: {{ \Carbon\Carbon::parse($periode)->isoFormat('MMMM YYYY') }},</b>
             <b>URL:</b> {{ url()->current() }}
@@ -589,69 +590,126 @@
                     <th>%</th>
                 </tr>
             </thead>
-            <tbody class="rekap">
-            @foreach ($pegawaiPagi as $index => $item)
-            @php
-                // Ambil daftar tanggal hadir untuk pegawai ini
-                $absenPegawai = collect($absensi['Pagi'][$item->nama_pegawai] ?? [])
-                    ->map(fn($x) => $x->tanggal) // <--- FIX UTAMA
-                    ->toArray();
-            @endphp
-            <tr>
-                <td class="tengah">{{ $loop->iteration }}</td>
-                <td class="pegawai">{{ $item->nama_pegawai }}</td>
-                @foreach ($dates as $tgl)
-                    @php
-                        // Ambil hari (Senin, Selasa, dll)
-                        $hari = \Carbon\Carbon::parse($tgl)->translatedFormat('l');
+       <tbody class="rekap">
+        @foreach ($pegawaiPagi as $item)
 
-                        // Ambil jadwal pegawai hari itu
-                        $jadwalHari = $jadwalGroup[$item->id]->firstWhere('hari', $hari);
+        @php
+            $absenPegawai = collect($absensi['Pagi'][$item->nama_pegawai] ?? [])
+                ->pluck('tanggal')
+                ->toArray();
 
-                        // Default
-                        $style = '';
+            $totalH = $totalI = $totalT = $totalS = $totalA = 0;
+            $hariAktif = 0;
+        @endphp
 
-                        // Jika tidak ada jadwal → dianggap libur → kuning
-                        if (!$jadwalHari) {
-                            $style = 'background: yellow;';
-                        }
-                        // Jika shift pagi = 0 → kuning
-                        elseif ($jadwalHari->pagi == 0) {
-                            $style = 'background: yellow;';
-                        }
-                    @endphp
+        <tr>
+        <td class="tengah">{{ $loop->iteration }}</td>
+        <td class="pegawai">{{ $item->nama_pegawai }}</td>
 
-                    <td style="text-align:center; {{ $style }}"
-                        @if($style == '' && !in_array($tgl, $absenPegawai) && $jadwalHari && $jadwalHari->malam == 1)
-                            style="background: #FF8C00; text-align:center;"
-                        @endif
-                    >
-                        @if(in_array($tgl, $absenPegawai))
-                            H
-                        @else
-                            @if($jadwalHari && $jadwalHari->pagi == 1)
-                                A
-                            @endif
-                        @endif
-                    </td>
-                @endforeach
-                @php
-                    $totalH = count($absenPegawai);
-                    $totalA = count($dates) - $totalH;
-                @endphp
-                <td class="totalH">{{ $totalH }}</td>
-                <td class="totalI">0</td>
-                <td class="totalT">0</td>
-                <td class="totalS">0</td>
-                <td class="totalA">{{ $totalA }}</td>
-                <td class="total">{{ round(($totalH / count($dates)) * 100) }}%</td>
-            </tr>
-            @endforeach
-            </tbody>
+        @foreach ($dates as $tgl)
+        @php
+            $hari = \Carbon\Carbon::parse($tgl)->translatedFormat('l');
+            $jadwalHari = $jadwalGroup[$item->id]->firstWhere('hari', $hari);
+
+            $isActiveShift = $jadwalHari && $jadwalHari->pagi == 1;
+            $isHadir = in_array($tgl, $absenPegawai);
+            $izin = $izinPegawai[$item->nama_pegawai][$tgl]['pagi']['ket'] ?? null;
+
+            // ===== CEK LIBUR GLOBAL =====
+            $isLibur = false;
+            foreach ($liburByDateShift[$tgl] ?? [] as $liburItem) {
+                if (
+                    $liburItem['ruang_id'] === 'Semua Ruang' ||
+                    ($liburItem['ruang_id'] === $item->ruang_id && $liburItem['shift_name'] === 'PAGI')
+                ) {
+                    $isLibur = true;
+                    break;
+                }
+            }
+
+            $cellStyle = '';
+
+            // ===== WARNA =====
+            if ($isLibur || ! $isActiveShift) {
+                $cellStyle = 'background:#ffff00;';
+            }
+            elseif ($izin) {
+                $cellStyle = match($izin) {
+                    'T' => 'background:#00FFFF;',
+                    'S' => 'background:#9ACD32;',
+                    'I' => 'background:#81b2da;',
+                    'L' => 'background:#ffff00;',
+                    default => ''
+                };
+            }
+            elseif (! $isHadir) {
+                $cellStyle = 'background:#FF8C00;';
+            }
+
+            // ===== HITUNG TOTAL =====
+            if ($isActiveShift && ! $isLibur) {
+
+                // jika L → tidak dihitung hari aktif
+                if ($izin === 'L') {
+                    // skip hari aktif
+                } else {
+
+                    $hariAktif++;
+
+                    if ($isHadir) {
+                        $totalH++;
+                    }
+                    elseif ($izin === 'I') {
+                        $totalI++;
+                    }
+                    elseif ($izin === 'T') {
+                        $totalT++;
+                    }
+                    elseif ($izin === 'S') {
+                        $totalS++;
+                    }
+                    else {
+                        $totalA++;
+                    }
+                }
+            }
+        @endphp
+
+        <td style="text-align:center; {{ $cellStyle }}">
+        @if ($isLibur)
+            {{-- kosong --}}
+        @elseif ($isHadir)
+            H
+        @elseif ($izin)
+        @if ($izin != "L")
+            {{ $izin }}
+        @endif
+
+        @elseif ($isActiveShift)
+            A
+        @endif
+        </td>
+
+        @endforeach
+
+        @php
+            $persen = $hariAktif > 0 ? round(($totalH / $hariAktif) * 100) : 0;
+        @endphp
+
+        <td class="totalH">{{ $totalH }}</td>
+        <td class="totalI">{{ $totalI }}</td>
+        <td class="totalT">{{ $totalT }}</td>
+        <td class="totalS">{{ $totalS }}</td>
+        <td class="totalA">{{ $totalA }}</td>
+        <td class="total">{{ $persen }}%</td>
+
+        </tr>
+        @endforeach
+        </tbody>
         </table>
         <br>
 
-        {{ !! renderLiburTable($libur, $bulan, $tahun) }}
+        {!! renderLiburTable($libur, $liburByDateShift, $bulan, $tahun, 'PAGI') !!}
 
 
         {{--  absen siang  --}}
@@ -699,15 +757,18 @@
                     $totalH = 0;
                     $totalI = 0;
                     $totalT = 0;
+                    $totalL = 0;
                     $totalS = 0;
                     $totalA = 0;
                     $hariAktif = 0;
+                    $totalTidakMasuk = 0;
                 @endphp
                 <tr>
                     <td class="tengah">{{ $loop->iteration }}</td>
                     <td class="pegawai">{{ $item->nama_pegawai }}</td>
                     @foreach ($dates as $tgl)
                         @php
+                            
                             $hari = \Carbon\Carbon::parse($tgl)->translatedFormat('l');
                             $jadwalHari = $jadwalGroup[$item->id]->firstWhere('hari', $hari) ?? null;
 
@@ -720,7 +781,7 @@
                             // izin siang
                             $shiftKey = 'siang';
                             $izinData = $izinPegawai[$item->nama_pegawai][$tgl] ?? null;
-                            $izinSiang = ($izinData !== null && isset($izinData[$shiftKey]) && $izinData[$shiftKey] == 1) ? $izinData['ket'] : null;
+                            $izinSiang = $izinPegawai[$item->nama_pegawai][$tgl]['siang']['ket'] ?? null;
 
                             /*
                             |----------------------------------------------------------
@@ -730,9 +791,9 @@
                             $isLibur = false;
                             foreach ($liburByDateShift[$tgl] ?? [] as $liburItem) {
                                 if (
-                                    $liburItem['ruang'] === 'Semua Ruang' ||
+                                    $liburItem['ruang_id'] === 'Semua Ruang' ||
                                     (
-                                        $liburItem['ruang'] === $item->ruang &&
+                                        $liburItem['ruang_id'] === $item->ruang_id &&
                                         $liburItem['shift_name'] === 'SIANG'
                                     )
                                 ) {
@@ -762,6 +823,7 @@
                                 if ($izinSiang == 'T')      $cellStyle = 'background: #00FFFF;';
                                 else if ($izinSiang == 'S') $cellStyle = 'background: #9ACD32;';
                                 else if ($izinSiang == 'I') $cellStyle = 'background: #81b2da;';
+                                else if ($izinSiang == 'L') $cellStyle = 'background: #ffff00;';
                                 else                        $cellStyle = 'background: lightblue;';
                             }
                             else if (! $isHadir && $isActiveShift) {
@@ -774,17 +836,39 @@
                             | HITUNG TOTAL (TIDAK SAAT LIBUR)
                             |----------------------------------------------------------
                             */
-                            if ($isActiveShift && ! $isLibur) {
+                           if ($isActiveShift && ! $isLibur) {
                                 $hariAktif++;
+                            
                                 if ($isHadir) {
                                     $totalH++;
-                                } else if ($izinSiang) {
-                                    if ($izinSiang == 'I')      $totalI++;
-                                    else if ($izinSiang == 'T') $totalT++;
-                                    else if ($izinSiang == 'S') $totalS++;
-                                } else {
-                                    $totalA++;
                                 }
+                                else if ($izinSiang) {
+                                    if ($izinSiang == 'I') {
+                                        $totalI++;
+                                        $totalTidakMasuk += 0.5;
+                                    }
+                                    else if ($izinSiang == 'S') {
+                                        $totalS++;
+                                        $totalTidakMasuk += 0.5;
+                                    }
+                                    else if ($izinSiang == 'T') {
+                                        $totalT++;
+                                        // TIDAK dihitung tidak masuk
+                                    }
+                                    else if ($izinSiang == 'L') {
+                                        $totalL++;
+                                        // TIDAK dihitung tidak masuk
+                                    }
+                                }
+                                else {
+                                    // ALPA
+                                    $totalA++;
+                                    $totalTidakMasuk += 1;
+                                }
+                            }
+                            if ($hariAktif > 0) {
+                                $persen = 
+                                    (($hariAktif - $totalTidakMasuk) / $hariAktif) * 100;
                             }
                         @endphp
 
@@ -794,28 +878,31 @@
                             @elseif ($isHadir)
                                 H
                             @elseif ($izinSiang)
+                            @if($izinSiang != 'L')
                                 {{ $izinSiang }}
+                                @endif
                             @elseif ($isActiveShift)
                                 A
+
                             @endif
-                        </td>
+                            </td>
                     @endforeach
                     @php
-                        $persen = $hariAktif > 0 ? round(($totalH / $hariAktif) * 100) : 0;
+                       
                     @endphp
                     <td class="totalH">{{ $totalH }}</td>
                     <td class="totalI">{{ $totalI }}</td>
                     <td class="totalT">{{ $totalT }}</td>
                     <td class="totalS">{{ $totalS }}</td>
                     <td class="totalA">{{ $totalA }}</td>
-                    <td class="total">{{ $persen }}%</td>
+                    <td class="total">{{ round($persen) }}%</td>
                 </tr>
             @endforeach
             </tbody>
         </table>
         <br>
 
-        {{ !! renderLiburTable($libur, $bulan, $tahun) }}
+        {!! renderLiburTable($libur, $liburByDateShift, $bulan, $tahun, 'SIANG') !!}
 
 
         {{--  absen malam  --}}
@@ -885,6 +972,7 @@
                     $totalT = 0;
                     $totalS = 0;
                     $totalA = 0;
+                    $totalL = 0;
                     $hariAktif = 0;
                 @endphp
                 <tr>
@@ -901,11 +989,12 @@
                             // status hadir
                             $isHadir = in_array($tgl, $absenPegawai);
 
-                            // izin siang
+                            // izin malam
                             $shiftKey = 'malam';
                             $izinData = $izinPegawai[$item->nama_pegawai][$tgl] ?? null;
-                            $izinMalam = ($izinData !== null && isset($izinData[$shiftKey]) && $izinData[$shiftKey] == 1) ? $izinData['ket'] : null;
-
+                           $izinMalam = $izinPegawai[$item->nama_pegawai][$tgl]['malam']['ket'] ?? null;
+                         
+                            
                             /*
                             |----------------------------------------------------------
                             | LIBUR
@@ -914,9 +1003,9 @@
                             $isLibur = false;
                             foreach ($liburByDateShift[$tgl] ?? [] as $liburItem) {
                                 if (
-                                    $liburItem['ruang'] === 'Semua Ruang' ||
+                                    $liburItem['ruang_id'] === 'Semua Ruang' ||
                                     (
-                                        $liburItem['ruang'] === $item->ruang &&
+                                        $liburItem['ruang_id'] === $item->ruang_id &&
                                         $liburItem['shift_name'] === 'MALAM'
                                     )
                                 ) {
@@ -946,6 +1035,7 @@
                                 if ($izinMalam == 'T')      $cellStyle = 'background: #00FFFF;';
                                 else if ($izinMalam == 'S') $cellStyle = 'background: #9ACD32;';
                                 else if ($izinMalam == 'I') $cellStyle = 'background: #81b2da;';
+                                 else if ($izinMalam == 'L') $cellStyle = 'background: #ffff00;';
                                 else                        $cellStyle = 'background: lightblue;';
                             }
                             else if (! $isHadir && $isActiveShift) {
@@ -967,6 +1057,7 @@
                                     if ($izinMalam == 'I')      $totalI++;
                                     else if ($izinMalam == 'T') $totalT++;
                                     else if ($izinMalam == 'S') $totalS++;
+                                    else if ($izinMalam == 'L') $totalL++;
                                 } else {
                                     $totalA++;
                                 }
@@ -979,13 +1070,21 @@
                             @elseif ($isHadir)
                                 H
                             @elseif ($izinMalam)
-                                {{ $izinMalam }}
+                                @php
+                                    $izinMalam = $izinPegawai[$item->nama_pegawai][$tgl]['malam']['ket'] ?? null;
+                                @endphp
+
+                                @if ($izinMalam && $izinMalam != 'L')
+                                    {{ $izinMalam }}
+                                @endif
+                             
                             @elseif ($isActiveShift)
                                 A
                             @endif
                         </td>
                     @endforeach
                     @php
+                        $hariAktif = $hariAktif-$totalL;
                         $persen = $hariAktif > 0 ? round(($totalH / $hariAktif) * 100) : 0;
                     @endphp
                     <td class="totalH">{{ $totalH }}</td>
@@ -1000,51 +1099,79 @@
         </table>
         <br>
 
-        {{ !! renderLiburTable($libur, $bulan, $tahun) }}
+        {!! renderLiburTable($libur, $liburByDateShift, $bulan, $tahun, 'MALAM') !!}
     </body>
 </html>
 
 @php
-    function renderLiburTable($libur, $bulan, $tahun) {
+function renderLiburTable($libur, $liburByDateShift, $bulan, $tahun, $shiftName)
+{
+    echo '
+    <table class="keterangan" style="border: none; border-collapse: collapse;">
+        <tr style="border: none;">
+            <td style="vertical-align: top; padding-left: 40px; border: none;">
+                <table class="libur" style="border-collapse: collapse; width: 100%;">
+                    <tr class="header-row">
+                        <th style="width: 80px; padding: 3px 5px; text-align: left; font-size: 14px;">Tanggal</th>
+                        <th style="width: 150px; padding: 3px 5px; text-align: left; font-size: 14px;">Ruang</th>
+                        <th style="padding: 3px 5px; text-align: left; font-size: 14px;">Acara</th>
+                    </tr>';
 
-        $libur = $libur->filter(function ($item) use ($bulan, $tahun) {
-            $tgl = \Carbon\Carbon::parse($item->tanggal);
-            return $tgl->month == $bulan && $tgl->year == $tahun;
-        });
+    $ada = false;
 
-        $libur = $libur->sortBy('tanggal');
+    foreach ($libur as $item) {
 
-        echo '
-        <table class="keterangan" style="border: none; border-collapse: collapse;">
-            <tr style="border: none;">
-                <td style="vertical-align: top; padding-left: 40px; border: none;">
-                    <table class="libur" style="border-collapse: collapse; width: 100%;">
-                        <tr class="header-row">
-                            <th style="width: 80px; padding: 3px 5px; text-align: left; font-size: 14px;">tanggal</th>
-                            <th style="width: 150px; padding: 3px 5px; text-align: left; font-size: 14px;">ruang</th>
-                            <th style="padding: 3px 5px; text-align: left; font-size: 14px;">acara</th>
-                        </tr>';
+        $tanggal = \Carbon\Carbon::parse($item->tanggal);
 
-                        if ($libur->isEmpty()) {
-                            echo '
-                            <tr>
-                                <td colspan="3" style="padding: 5px; font-size: 14px; text-align: center;">
-                                    Tidak ada libur bulan ini
-                                </td>
-                            </tr>';
-                        }
+        // Filter bulan & tahun
+        if ($tanggal->month != $bulan || $tanggal->year != $tahun) {
+            continue;
+        }
 
-                        foreach ($libur as $item) {
-                            echo '
-                            <tr>
-                                <td style="padding: 3px 5px; font-size: 14px; text-align: left;">'.\Carbon\Carbon::parse($item->tanggal)->isoFormat('DD MMM').'</td>
-                                <td style="padding: 3px 5px; font-size: 14px; text-align: left;">'.$item->ruang.'</td>
-                                <td style="padding: 3px 5px; font-size: 14px; text-align: left;">'.$item->acara.'</td>
-                            </tr>';
-                        }
-        echo '</table>
-                </td>
-            </tr>
-        </table>';
+        $tglKey = $tanggal->format('Y-m-d');
+
+        // Cek apakah tanggal ini ada shift libur
+        if (!isset($liburByDateShift[$tglKey])) {
+            continue;
+        }
+
+        foreach ($liburByDateShift[$tglKey] as $shift) {
+
+            if (strtoupper($shift['shift_name']) === strtoupper($shiftName)) {
+
+                $ada = true;
+
+                echo '
+                <tr>
+                    <td style="padding: 3px 5px; font-size: 14px; text-align: left;">
+                        '.$tanggal->isoFormat('DD MMM').'
+                    </td>
+                    <td style="padding: 3px 5px; font-size: 14px; text-align: left;">
+                        '.($item->ruang->ruang_pustakawans ?? '-').'
+                    </td>
+                    <td style="padding: 3px 5px; font-size: 14px; text-align: left;">
+                        '.$item->libur.'
+                    </td>
+                </tr>';
+
+                break; // supaya tidak dobel jika ada lebih dari 1 shift sama
+            }
+        }
     }
+
+    if (!$ada) {
+        echo '
+        <tr>
+            <td colspan="3" style="text-align: center; padding: 5px;">
+                Tidak ada libur bulan ini
+            </td>
+        </tr>';
+    }
+
+    echo '
+                </table>
+            </td>
+        </tr>
+    </table>';
+}
 @endphp

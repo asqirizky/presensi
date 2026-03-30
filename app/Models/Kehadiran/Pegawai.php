@@ -2,8 +2,10 @@
 
 namespace App\Models\Kehadiran;
 
+use App\Models\Kehadiran\PegawaiJadwal;
+use App\Models\Master\Jabatan;
+use App\Models\Master\Ruang;
 use Illuminate\Database\Eloquent\Model;
-use App\Models\Shift;
 
 class Pegawai extends Model
 {
@@ -11,14 +13,19 @@ class Pegawai extends Model
 
     protected $guarded = ['id'];
 
-    public function jadwals()
+    public function jadwal()
     {
-        return $this->hasMany(PegawaiJadwal::class, 'pegawai_id', 'pegawai_jadwal');
+        return $this->hasMany(PegawaiJadwal::class, 'pegawai_id', 'id');
     }
 
     public function jabatan()
     {
         return $this->belongsTo(Jabatan::class, 'jabatan_id', 'id');
+    }
+
+    public function ruang()
+    {
+        return $this->belongsTo(Ruang::class);
     }
 
 }

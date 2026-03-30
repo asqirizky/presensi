@@ -273,14 +273,8 @@
                                         @php
                                         $kehadiranPermissions = [
                                             'kehadiran hadir-lihat',
-                                            'kehadiran pegawai-lihat',
-                                            'kehadiran jadwal-lihat',
                                             'kehadiran izin-lihat',
-                                            'kehadiran jabatan-lihat',
-                                            'kehadiran tunjangan-lihat',
                                             'kehadiran rekapan-lihat',
-                                            'kehadiran generate-lihat',
-                                            'kehadiran libur-lihat',
                                         ];
 
                                         $kehadiranActive = request()->is('admin/kehadiran-*');
@@ -304,51 +298,11 @@
                                                     </a>
                                                 </div>
                                                 @endcan
-                                                @can('kehadiran pegawai-lihat')
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/kehadiran-pegawai') ? 'active' : '' }}" href="admin/kehadiran-pegawai">
-                                                        <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                                        <span class="menu-title">Pegawai</span>
-                                                    </a>
-                                                </div>
-                                                @endcan
-                                                @can('kehadiran jadwal-lihat')
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/kehadiran-jadwal') ? 'active' : '' }}" href="admin/kehadiran-jadwal">
-                                                        <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                                        <span class="menu-title">Jadwal</span>
-                                                    </a>
-                                                </div>
-                                                @endcan
                                                 @can('kehadiran izin-lihat')
                                                 <div class="menu-item">
                                                     <a class="menu-link {{ request()->is('admin/kehadiran-izin') ? 'active' : '' }}" href="admin/kehadiran-izin">
                                                         <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
                                                         <span class="menu-title">Izin</span>
-                                                    </a>
-                                                </div>
-                                                @endcan
-                                                @can('kehadiran libur-lihat')
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/kehadiran-libur') ? 'active' : '' }}" href="admin/kehadiran-libur">
-                                                        <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                                        <span class="menu-title">Libur</span>
-                                                    </a>
-                                                </div>
-                                                @endcan
-                                                @can('kehadiran jabatan-lihat')
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/kehadiran-jabatan') ? 'active' : '' }}" href="admin/kehadiran-jabatan">
-                                                        <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                                        <span class="menu-title">Jabatan</span>
-                                                    </a>
-                                                </div>
-                                                @endcan
-                                                @can('kehadiran tunjangan-lihat')
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/kehadiran-tunjangan') ? 'active' : '' }}" href="admin/kehadiran-tunjangan">
-                                                        <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                                        <span class="menu-title">Tunjangan</span>
                                                     </a>
                                                 </div>
                                                 @endcan
@@ -369,13 +323,9 @@
                                         @php
                                             $absenPermission = [
                                                 'absen absen-lihat',
-                                                'absen barokah-lihat',
                                                 'absen izin-lihat',
                                                 'absen khidmah-lihat',
-                                                'absen libur-lihat',
-                                                'absen lokasi-lihat',
                                                 'absen rekap-lihat',
-                                                'absen shift-lihat',
                                             ];
 
                                             $absenActive = request()->is('admin/absensi-*');
@@ -394,7 +344,9 @@
                                                 @can('absen khidmah-lihat')
                                                 <div class="menu-item">
                                                     <a class="menu-link {{ request()->is('admin/absensi-khidmah') ? 'active' : '' }}" href="admin/absensi-khidmah">
-                                                        <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
+                                                        <span class="menu-bullet">
+															<span class="bullet bullet-dot"></span>
+														</span>
                                                         <span class="menu-title">Khidmah</span>
                                                     </a>
                                                 </div>
@@ -407,38 +359,6 @@
                                                     </a>
                                                 </div>
                                                 @endcan
-                                                @can('absen libur-lihat')
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/absensi-libur') ? 'active' : '' }}" href="admin/absensi-libur">
-                                                        <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                                        <span class="menu-title">Libur</span>
-                                                    </a>
-                                                </div>
-                                                @endcan
-                                                @can('absen shift-lihat')
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/absensi-shift') ? 'active' : '' }}" href="admin/absensi-shift">
-                                                        <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                                        <span class="menu-title">Shift</span>
-                                                    </a>
-                                                </div>
-                                                @endcan
-                                                @can('absen lokasi-lihat')
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/absensi-lokasi') ? 'active' : '' }}" href="admin/absensi-lokasi">
-                                                        <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                                        <span class="menu-title">Lokasi</span>
-                                                    </a>
-                                                </div>
-                                                @endcan
-                                                @can('absen barokah-lihat')
-                                                <div class="menu-item">
-                                                    <a class="menu-link {{ request()->is('admin/absensi-barokah') ? 'active' : '' }}" href="admin/absensi-barokah">
-                                                        <span class="menu-bullet"><span class="bullet bullet-dot"></span></span>
-                                                        <span class="menu-title">Barokah</span>
-                                                    </a>
-                                                </div>
-                                                @endcan
                                                 @can('absen rekap-lihat')
                                                 <div class="menu-item">
                                                     <a class="menu-link {{ request()->is('admin/absensi-rekap') ? 'active' : '' }}" href="admin/absensi-rekap">
@@ -447,7 +367,6 @@
                                                     </a>
                                                 </div>
                                                 @endcan
-
                                             </div>
                                         </div>
                                         @endcanany
@@ -459,20 +378,205 @@
 											</div>
 											<!--end:Menu content-->
 										</div>
+
+
+										@php
+											$masterPermission = [
+												'master pustakawan-lihat',
+												'master jadwal-lihat',
+												'master libur-lihat',
+												'master ruang-lihat',
+												'master jabatan-lihat',
+												'master pendPagi-lihat'
+											];
+
+											$masterActive = request()->is('admin/master-*');
+										@endphp
+
+										@canany($masterPermission)
 										<!--begin:Menu item-->
+										@can('master pustakawan-lihat')
 										<div class="menu-item">
 											<!--begin:Menu link-->
-											<a class="menu-link" href="" target="_blank" data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss="click" data-bs-placement="right">
+											<a class="menu-link {{ request()->is('admin/master-pustakawan') ? 'active' : '' }}" href="admin/master-pustakawan">
 												<span class="menu-icon">
-													<i class="ki-duotone ki-rocket fs-2">
+													<i class="ki-duotone ki-user fs-2">
 														<span class="path1"></span>
 														<span class="path2"></span>
 													</i>
 												</span>
-												<span class="menu-title">Jadwal</span>
+												<span class="menu-title">Pustakawan</span>
 											</a>
 											<!--end:Menu link-->
 										</div>
+										@endcan
+										<!--end:Menu item-->
+										@can('master jadwal-lihat')
+										<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                                            <a class="menu-link {{ request()->is('admin/master-jadwal') ? 'active' : '' }}" href="admin/master-jadwal">
+                                                <span class="menu-icon">
+													<i class="ki-outline ki-book fs-2"></i>
+												</span> 
+												<span class="menu-title">Jadwal</span>
+											</a>
+										</div>
+										@endcan
+										<!--end:Menu item-->
+										<!--begin:Menu item-->
+										@can('master libur-lihat')
+										<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                                            <a class="menu-link {{ request()->is('admin/master-libur') ? 'active' : '' }}" href="admin/master-libur">
+                                                <span class="menu-icon">
+													<i class="ki-outline ki-abstract-16 fs-2"></i>
+												</span> 
+												<span class="menu-title">Libur</span>
+											</a>
+										</div>
+										@endcan
+										<!--end:Menu item-->
+										<!--begin:Menu item-->
+										@can('master ruang-lihat')
+										<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                                            <a class="menu-link {{ request()->is('admin/master-ruang') ? 'active' : '' }}" href="admin/master-ruang">
+                                                <span class="menu-icon">
+													<i class="ki-outline ki-cheque fs-2"></i>
+												</span> 
+												<span class="menu-title">Ruang</span>
+											</a>
+										</div>
+										@endcan
+										<!--end:Menu item-->
+										<!--begin:Menu item-->
+										@can('master jabatan-lihat')
+										<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                                            <a class="menu-link {{ request()->is('admin/master-jabatan') ? 'active' : '' }}" href="admin/master-jabatan">
+                                                <span class="menu-icon">
+													<i class="ki-outline ki-user-square fs-2"></i>
+												</span> 
+												<span class="menu-title">Jabatan</span>
+											</a>
+										</div>
+										@endcan
+										<!--end:Menu item-->
+										<!--begin:Menu item-->
+										@can('master pendPagi-lihat')
+										<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
+                                            <a class="menu-link {{ request()->is('admin/master-pendPagi') ? 'active' : '' }}" href="admin/master-pendPagi">
+                                                <span class="menu-icon">
+													<i class="ki-outline ki-user-square fs-2"></i>
+												</span> 
+												<span class="menu-title">Pendidikan Pagi</span>
+											</a>
+										</div>
+										@endcan
+										<!--end:Menu item-->
+										@endcanany
+
+
+										<div class="pt-5 menu-item">
+											<!--begin:Menu content-->
+											<div class="menu-content">
+												<span class="menu-heading fw-bold text-uppercase fs-7">Payroll</span>
+											</div>
+											<!--end:Menu content-->
+										</div>
+
+										@php
+											$payrollPermission = [
+												'payroll tunjangan-lihat',
+											];
+
+											$payrollActive = request()->is('admin/payroll-*');
+										@endphp
+
+										@canany($payrollPermission)
+										<!--begin:Menu item-->
+										<div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ $payrollActive ? 'here show' : '' }}">
+                                            @can('payroll tunjangan-lihat')
+											<span class="menu-link">
+                                                <span class="menu-icon">
+                                                    <i class="ki-outline ki-financial-schedule fs-2"></i>
+                                                </span>
+                                                <span class="menu-title">Tunjangan</span>
+                                                <span class="menu-arrow"></span>
+                                            </span>
+											<!--begin:Menu sub-->
+                                            <div class="menu-sub menu-sub-accordion">
+												<!--begin:Menu item-->
+                                                <div class="menu-item">
+                                                    <a class="menu-link {{ request()->is('admin/payroll-kehadiran') ? 'active' : '' }}" href="admin/payroll-kehadiran">
+                                                        <span class="menu-bullet">
+															<span class="bullet bullet-dot"></span>
+														</span>
+                                                        <span class="menu-title">Kehadiran</span>
+                                                    </a>
+                                                </div>
+												<!--end:Menu item-->
+												<!--begin:Menu item-->
+                                                <div class="menu-item">
+                                                    <a class="menu-link {{ request()->is('admin/payroll-jabatan') ? 'active' : '' }}" href="admin/payroll-jabatan">
+                                                        <span class="menu-bullet">
+															<span class="bullet bullet-dot"></span>
+														</span>
+                                                        <span class="menu-title">Jabatan</span>
+                                                    </a>
+                                                </div>
+												<!--end:Menu item-->
+												<!--begin:Menu item-->
+                                                <div class="menu-item">
+                                                    <a class="menu-link {{ request()->is('admin/payroll-pengabdian') ? 'active' : '' }}" href="admin/payroll-pengabdian">
+                                                        <span class="menu-bullet">
+															<span class="bullet bullet-dot"></span>
+														</span>
+                                                        <span class="menu-title">Pengabdian</span>
+                                                    </a>
+                                                </div>
+												<!--end:Menu item-->
+												<!--begin:Menu item-->
+                                                <div class="menu-item">
+                                                    <a class="menu-link {{ request()->is('admin/payroll-tunkel') ? 'active' : '' }}" href="admin/payroll-tunkel">
+                                                        <span class="menu-bullet">
+															<span class="bullet bullet-dot"></span>
+														</span>
+                                                        <span class="menu-title">Tunkel</span>
+                                                    </a>
+                                                </div>
+												<!--end:Menu item-->
+												<!--begin:Menu item-->
+                                                <div class="menu-item">
+                                                    <a class="menu-link {{ request()->is('admin/payroll-kehormatan') ? 'active' : '' }}" href="admin/payroll-kehormatan">
+                                                        <span class="menu-bullet">
+															<span class="bullet bullet-dot"></span>
+														</span>
+                                                        <span class="menu-title">Kehormatan</span>
+                                                    </a>
+                                                </div>
+												<!--end:Menu item-->
+												<!--begin:Menu item-->
+                                                <div class="menu-item">
+                                                    <a class="menu-link {{ request()->is('admin/payroll-anak') ? 'active' : '' }}" href="admin/payroll-anak">
+                                                        <span class="menu-bullet">
+															<span class="bullet bullet-dot"></span>
+														</span>
+                                                        <span class="menu-title">Anak</span>
+                                                    </a>
+                                                </div>
+												<!--end:Menu item-->
+												<!--begin:Menu item-->
+                                                <div class="menu-item">
+                                                    <a class="menu-link {{ request()->is('admin/payroll-rankDosen') ? 'active' : '' }}" href="admin/payroll-rankDosen">
+                                                        <span class="menu-bullet">
+															<span class="bullet bullet-dot"></span>
+														</span>
+                                                        <span class="menu-title">Rank Dosen</span>
+                                                    </a>
+                                                </div>
+												<!--end:Menu item-->
+                                            </div>
+											<!--end:Menu sub-->
+											@endcan
+                                        </div>
+										@endcanany
 										<!--end:Menu item-->
 
 										<div class="pt-5 menu-item">
@@ -483,40 +587,35 @@
 											<!--end:Menu content-->
 										</div>
 
-                                        @if(auth()->user()->hasPermissionTo('pengguna-lihat') || auth()->user()->hasPermissionTo('akses pengguna-lihat'))
-                                        <!--begin:Menu item-->
-                                        @if(request()->is('admin/pengguna') || request()->is('admin/pengguna-akses'))
-										<div data-kt-menu-trigger="click" class="menu-item here show menu-accordion">
-                                        @else
-										<div data-kt-menu-trigger="click" class="menu-item menu-accordion">
-                                        @endif
-											<!--begin:Menu link-->
-											<span class="menu-link">
-												<span class="menu-icon">
-													<i class="ki-outline ki-address-book fs-2"></i>
-												</span>
-												<span class="menu-title">Pengguna</span>
-												<span class="menu-arrow"></span>
-											</span>
-											<!--end:Menu link-->
-											<!--begin:Menu sub-->
-											<div class="menu-sub menu-sub-accordion">
-												<!--begin:Menu item-->
-                                                @if(auth()->user()->hasPermissionTo('pengguna-lihat'))
-												<div class="menu-item">
-													<!--begin:Menu link-->
-													<a class="menu-link {{ request()->is('admin/pengguna') ? 'active' : ''}}" href="admin/pengguna">
+										@php
+                                            $penggunaPermission = [
+                                                'pengguna-lihat',
+												'akses pengguna-lihat',
+                                            ];
+
+                                            $penggunaActive = request()->is('admin/pengguna*');
+                                        @endphp
+                                        @canany($penggunaPermission)
+                                        <div data-kt-menu-trigger="click" class="menu-item menu-accordion {{ $penggunaActive ? 'here show' : '' }}">
+                                            <span class="menu-link">
+                                                <span class="menu-icon">
+                                                    <i class="ki-outline ki-address-book fs-2"></i>
+                                                </span>
+                                                <span class="menu-title">Pengguna</span>
+                                                <span class="menu-arrow"></span>
+                                            </span>
+                                            <div class="menu-sub menu-sub-accordion">
+                                                @can('pengguna-lihat')
+                                                <div class="menu-item">
+                                                    <a class="menu-link {{ request()->is('admin/pengguna') ? 'active' : ''}}" href="admin/pengguna">
 														<span class="menu-bullet">
 															<span class="bullet bullet-dot"></span>
 														</span>
 														<span class="menu-title">Data Pengguna</span>
 													</a>
-													<!--end:Menu link-->
-												</div>
-                                                @endif
-												<!--end:Menu item-->
-												<!--begin:Menu item-->
-                                                @if(auth()->user()->hasPermissionTo('akses pengguna-lihat'))
+                                                </div>
+                                                @endcan
+												@can('akses pengguna-lihat')
 												<div class="menu-item">
 													<!--begin:Menu link-->
 													<a class="menu-link {{ request()->is('admin/pengguna-akses') ? 'active' : ''}}" href="admin/pengguna-akses">
@@ -527,12 +626,12 @@
 													</a>
 													<!--end:Menu link-->
 												</div>
-                                                @endif
-												<!--end:Menu item-->
-											</div>
-											<!--end:Menu sub-->
-										</div>
-                                        @endif
+												@endcan
+                                            </div>
+                                        </div>
+                                        @endcanany
+
+										
 										<!--end:Menu item-->
 									</div>
 									<!--end::Menu-->

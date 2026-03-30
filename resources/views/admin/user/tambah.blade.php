@@ -108,9 +108,6 @@
                     <!--begin::Input-->
                     <select class="form-select" name="tempat" data-control="select2" data-hide-search="true" data-placeholder="Pilih Tempat Khidmah">
                         <option></option>
-                        @foreach ($gedung as $lokasi)
-                        <option value="{{ $lokasi->gedung }}">{{ $lokasi->gedung }}</option>
-                        @endforeach                        
                     </select>                    
                     <!--end::Input-->
                 </div>

@@ -8,6 +8,7 @@ use App\Models\Kehadiran\Libur;
 use App\Models\Kehadiran\Jadwal;
 use App\Models\Kehadiran\Pegawai;
 use App\Http\Controllers\Controller;
+use App\Models\Kehadiran\Ruang;
 
 class LiburController extends Controller
 {
@@ -16,17 +17,18 @@ class LiburController extends Controller
 
         $bulanInput = $request->bulan ?? now()->format('Y-m');
 
-        $bulanAngka = Carbon::parse($bulanInput)->month;
-        $tahunAngka = Carbon::parse($bulanInput)->year;
+        $bulanAngka = $request->bulan ?? now()->month;
+        $tahunAngka = $request->tahun ?? now()->year;
 
-        $bulan = Carbon::parse($bulanInput)->isoFormat('MMMM YYYY'); // ← Desember 2025
+        $bulan = Carbon::create($tahunAngka, $bulanAngka)
+                    ->isoFormat('MMMM YYYY'); // ← Desember 2025
 
         $query = Libur::orderBy('tanggal', 'asc')
             ->whereMonth('tanggal', $bulanAngka)
             ->whereYear('tanggal', $tahunAngka);
 
         $jadwals = Jadwal::get();
-        $ruang = Pegawai::where('ruang')->get();
+        $ruang = Ruang::get();
 
         $libur = $query->get();
 
@@ -44,8 +46,8 @@ class LiburController extends Controller
 
         $libur = Libur::create([
             'tanggal' => $request->tanggal,
-            'ruang' => $request->ruang,
-            'acara' => $request->acara,
+            'ruang_id' => $request->ruang_id,
+            'libur' => $request->libur,
         ]);
 
         $libur->jadwals()->attach($request->jadwals);

@@ -76,7 +76,7 @@ class BarokahPustakawanController extends Controller
             })
 
             ->leftJoin('tunjangan_jabatans as tj', function ($join) use ($apbm) {
-                $join->on('tj.nama_jabatan', '=', 'pegawais.nama_jabatan')
+                $join->on('tj.nama_jabatan', '=', 'pegawais.jabatan_id')
                     ->where('tj.APBM', $apbm);
             })
 
@@ -98,7 +98,7 @@ class BarokahPustakawanController extends Controller
                 pegawais.id,
                 pegawais.nama_pegawai,
                 pegawais.domisili,
-                pegawais.nama_jabatan,
+                pegawais.jabatan_id,
                 pegawais.tmt_mengajar,
                 pegawais.pend_terakhir,
 
@@ -119,7 +119,7 @@ class BarokahPustakawanController extends Controller
                 'pegawais.id',
                 'pegawais.nama_pegawai',
                 'pegawais.domisili',
-                'pegawais.nama_jabatan',
+                'pegawais.jabatan_id',
                 'pegawais.tmt_mengajar',
                 'pegawais.pend_terakhir'
             )

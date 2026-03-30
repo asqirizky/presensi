@@ -15,10 +15,9 @@ class UserController extends Controller
     public function index()
     {
         $user = User::latest()->get();
-        $gedung = Aset_gedung::all();
         $jumlah = User::count();
 
-        return view('admin.user.index', compact('user', 'jumlah', 'gedung'));
+        return view('admin.user.index', compact('user', 'jumlah'));
     }
 
     public function store(Request $request)

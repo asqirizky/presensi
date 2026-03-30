@@ -107,11 +107,7 @@
                     <!--end::Label-->
                     <!--begin::Input-->
                     <select class="form-select" name="tempat" data-control="select2" data-hide-search="true" data-placeholder="Pilih Tempat Khidmah">
-                        @foreach ($gedung as $lokasi)
-                            <option value="{{ $lokasi->gedung }}" {{ $lokasi->gedung == $item->tempat ? 'selected' : '' }}>
-                                {{ $lokasi->gedung }}
-                            </option>
-                        @endforeach                        
+                        <option value="">Lorem ipsum dolor </option>                        
                     </select>              
                     <!--end::Input-->
                 </div>
