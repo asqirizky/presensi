@@ -179,6 +179,7 @@ class PustakawanController extends Controller
             'pend_terakhir' => $request->pend_terakhir,
             'jk' => $request->jk,
             'status_perkawinan' => $request->status_perkawinan,
+            'jabatan_id' => $request->jabatan_id,
             'status' => $request->input('status', '0'),
             'foto' => $foto->hashName(),
         ]);
