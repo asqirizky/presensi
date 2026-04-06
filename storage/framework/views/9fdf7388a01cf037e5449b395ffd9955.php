@@ -1,5 +1,5 @@
 <!--begin::Modal - Update user details-->
-<div class="modal fade" id="kt_modal_new_target{{ $item->id }}" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="kt_modal_update_details" tabindex="-1" aria-hidden="true">
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-800px">
         <!--begin::Modal content-->
@@ -16,30 +16,29 @@
         <!--begin::Modal body-->
         <div class="pt-0 modal-body scroll-y px-15 px-lg-15 pb-15">
             <!--begin:Form-->
-            <form class="form" method="POST" enctype="multipart/form-data" action="{{ route('master-ruang.update', $item->id)}}">
-                @csrf
-                @method('PUT')
+            <form class="form" method="POST" enctype="multipart/form-data" action="admin/master-ruang">
+                <?php echo csrf_field(); ?>
                 <!--begin::Heading-->
                 <div class="text-center mb-13">
                     <!--begin::Title-->
-                    <h1 class="mb-3">Edit Ruang Pustakawan</h1>
-                    <div class="text-muted fw-semibold fs-5">Kehadiran Pustakawan.</div>
+                    <h1 class="mb-3">Tambah Ruang Pustakawan</h1>
+                    <div class="text-muted fw-semibold fs-5">Kehadiran Umana Perpustakaan Ibrahimy.</div>
                     <!--end::Title-->
                 </div>
                 <!--end::Heading-->
                 <!--begin::Input group-->
-                <div class="mb-8 fv-row text-start">
+                <div class="mb-8 fv-row">
                     <!--begin::Label-->
                     <label class="mb-2 required fw-semibold fs-6">Ruang</label>
                     <!--end::Label-->
                     <!--begin::Col-->
-                    <input type="text" class="form-control form-control-lg" name="ruang_pustakawans" placeholder="Tunjangan Kehormatan" value="{{ $item->ruang_pustakawans }}" required>
+                    <input type="text" class="form-control form-control-lg" name="ruang_pustakawans" placeholder="Ruang" required>
                     <!--end::Col-->
                 </div>
                 <!--end::Input group-->
                 <div class="text-center">
                     <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">Cancel</button>
-                    {{--  <button class="btn btn-primary" >  --}}
+                    
                     <button type="submit" class="btn btn-primary">
                         <span class="indicator-label">Simpan</span>
                         <span class="indicator-progress">Please wait...
@@ -58,4 +57,4 @@
 <!--end::Modal - Update user details-->
 
 
-{{-- @include('sweetalert::alert') --}}
+<?php /**PATH /var/www/html/resources/views/admin/Master/ruang/tambah_ruang.blade.php ENDPATH**/ ?>

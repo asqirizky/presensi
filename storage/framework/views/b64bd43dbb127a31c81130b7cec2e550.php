@@ -113,10 +113,26 @@
                                     </td>
                                     <td class="text-center"></td>
                                     <td class="text-center">
-                                        <?php if($item->ruang->ruang_pustakawans == "Perpustakaan Putra"): ?>
-                                            <div class="px-4 py-3 badge fs-6 badge-light-warning"><?php echo e($item->ruang->ruang_pustakawans); ?></div>
-                                        <?php elseif($item->ruang->ruang_pustakawans == "Perpustakaan Putri"): ?>
-                                            <div class="px-4 py-3 badge fs-6 badge-light-primary"><?php echo e($item->ruang->ruang_pustakawans); ?></div>
+                                        <?php if($item->ruang && $item->ruang->ruang_pustakawans == "Perpustakaan Pusat"): ?>
+                                            <div class="px-4 py-3 badge fs-6 badge-light-warning">
+                                                <?php echo e($item->ruang->ruang_pustakawans); ?>
+
+                                            </div>
+                                        <?php elseif($item->ruang && $item->ruang->ruang_pustakawans == "Perpustakaan Putri Pusat"): ?>
+                                            <div class="px-4 py-3 badge fs-6 badge-light-primary">
+                                                <?php echo e($item->ruang->ruang_pustakawans); ?>
+
+                                            </div>
+                                        <?php elseif($item->ruang && $item->ruang->ruang_pustakawans == "Perpustakaan Fakultas Syariah & Ekonomi Islam"): ?>
+                                            <div class="div px-4 py-3 badge fs-6 badge-light-info">
+                                                <?php echo e($item->ruang->ruang_pustakawans); ?>
+
+                                            </div>
+                                        <?php elseif($item->ruang && $item->ruang->ruang_pustakawans == "Perpustakaan Fakultas Ilmu Kebidanan"): ?>
+                                            <div class="div px-4 py-3 badge fs-6 badge-light-danger">
+                                                <?php echo e($item->ruang->ruang_pustakawans); ?>
+
+                                            </div>
                                         <?php endif; ?>
                                     </td>
                                     <td></td>

@@ -1,5 +1,5 @@
 <!--begin::Modal - Update user details-->
-<div class="modal fade" id="kt_modal_new_target{{ $item->id }}" tabindex="-1" aria-hidden="true">
+<div class="modal fade" id="kt_modal_new_target<?php echo e($item->id); ?>" tabindex="-1" aria-hidden="true">
     <!--begin::Modal dialog-->
     <div class="modal-dialog modal-dialog-centered mw-800px">
         <!--begin::Modal content-->
@@ -16,9 +16,9 @@
         <!--begin::Modal body-->
         <div class="pt-0 modal-body scroll-y px-15 px-lg-15 pb-15">
             <!--begin:Form-->
-            <form class="form" method="POST" enctype="multipart/form-data" action="{{ route('master-ruang.update', $item->id)}}">
-                @csrf
-                @method('PUT')
+            <form class="form" method="POST" enctype="multipart/form-data" action="<?php echo e(route('master-ruang.update', $item->id)); ?>">
+                <?php echo csrf_field(); ?>
+                <?php echo method_field('PUT'); ?>
                 <!--begin::Heading-->
                 <div class="text-center mb-13">
                     <!--begin::Title-->
@@ -33,13 +33,13 @@
                     <label class="mb-2 required fw-semibold fs-6">Ruang</label>
                     <!--end::Label-->
                     <!--begin::Col-->
-                    <input type="text" class="form-control form-control-lg" name="ruang_pustakawans" placeholder="Tunjangan Kehormatan" value="{{ $item->ruang_pustakawans }}" required>
+                    <input type="text" class="form-control form-control-lg" name="ruang_pustakawans" placeholder="Tunjangan Kehormatan" value="<?php echo e($item->ruang_pustakawans); ?>" required>
                     <!--end::Col-->
                 </div>
                 <!--end::Input group-->
                 <div class="text-center">
                     <button type="reset" class="btn btn-light me-3" data-bs-dismiss="modal">Cancel</button>
-                    {{--  <button class="btn btn-primary" >  --}}
+                    
                     <button type="submit" class="btn btn-primary">
                         <span class="indicator-label">Simpan</span>
                         <span class="indicator-progress">Please wait...
@@ -58,4 +58,5 @@
 <!--end::Modal - Update user details-->
 
 
-{{-- @include('sweetalert::alert') --}}
+
+<?php /**PATH /var/www/html/resources/views/admin/Master/ruang/edit_ruang.blade.php ENDPATH**/ ?>

@@ -13,7 +13,7 @@ class Pustakawan extends Model
 
     public function ruang()
     {
-        return $this->belongsTo(Ruang::class);
+        return $this->belongsTo(Ruang::class, 'ruang_id');
     }
 
     public function jabatan() 

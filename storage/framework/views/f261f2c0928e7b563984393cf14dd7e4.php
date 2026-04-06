@@ -1,7 +1,6 @@
-@extends('layout.sidebarnavbar')
-@section('admin-konten')
+<?php $__env->startSection('admin-konten'); ?>
 
-{{-- konten --}}
+
 <!--begin::Main-->
 <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
 	<!--begin::Content wrapper-->
@@ -13,13 +12,13 @@
 				<!--begin::Page title-->
 				<div class="flex-wrap page-title d-flex flex-column justify-content-center me-3">
 					<!--begin::Title-->
-					<h1 class="my-0 text-gray-900 page-heading d-flex fw-bold fs-3 flex-column justify-content-center">Product Form</h1>
+					<h1 class="my-0 text-gray-900 page-heading d-flex fw-bold fs-3 flex-column justify-content-center">Tambah Pustakawan</h1>
 					<!--end::Title-->
 					<!--begin::Breadcrumb-->
 					<ul class="pt-1 my-0 breadcrumb breadcrumb-separatorless fw-semibold fs-7">
 						<!--begin::Item-->
 						<li class="breadcrumb-item text-muted">
-							<a href="index.html" class="text-muted text-hover-primary">Home</a>
+							<a href="admin/master-pustakawan" class="text-muted text-hover-primary">Home</a>
 						</li>
 						<!--end::Item-->
 						<!--begin::Item-->
@@ -28,15 +27,7 @@
 						</li>
 						<!--end::Item-->
 						<!--begin::Item-->
-						<li class="breadcrumb-item text-muted">eCommerce</li>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<li class="breadcrumb-item">
-							<span class="bg-gray-500 bullet w-5px h-2px"></span>
-						</li>
-						<!--end::Item-->
-						<!--begin::Item-->
-						<li class="breadcrumb-item text-muted">Catalog</li>
+							<li class="breadcrumb-item text-muted">Tambah Pustakawan</li>
 						<!--end::Item-->
 					</ul>
 					<!--end::Breadcrumb-->
@@ -51,8 +42,8 @@
 			<!--begin::Content container-->
 			<div id="kt_app_content_container" class="app-container container-xxl">
 				<!--begin::Form-->
-				<form class="form d-flex flex-column flex-lg-row" method="POST" enctype="multipart/form-data" action="/admin/kehadiran-pegawai">
-					@csrf
+				<form class="form d-flex flex-column flex-lg-row" method="POST" enctype="multipart/form-data" action="/admin/master-pustakawan">
+					<?php echo csrf_field(); ?>
                     <!--begin::Aside column-->
 					<div class="d-flex flex-column gap-7 gap-lg-10 w-100 w-lg-300px mb-7 me-lg-10">
 						<!--begin::Thumbnail settings-->
@@ -71,10 +62,10 @@
                                 <!--begin::Image placeholder-->
                                 <style>
                                     .image-input-placeholder {
-                                        background-image: url('{{ asset('admin/assets/media/svg/files/blank-image.svg') }}');
+                                        background-image: url('<?php echo e(asset('admin/assets/media/svg/files/blank-image.svg')); ?>');
                                     }
                                     [data-bs-theme="dark"] .image-input-placeholder {
-                                        background-image: url('{{ asset('admin/assets/media/svg/files/blank-image-dark.svg') }}');
+                                        background-image: url('<?php echo e(asset('admin/assets/media/svg/files/blank-image-dark.svg')); ?>');
                                     }
                                 </style>
                                 <!--end::Image placeholder-->
@@ -115,9 +106,16 @@
                                 <!--begin::Hint-->
                                 <div class="form-text">File memiliki format: png, jpg, jpeg. Maksimal ukuran
                                     1MB(1024kb)</div>
-                                @error('foto')
+                                <?php $__errorArgs = ['foto'];
+$__bag = $errors->getBag($__errorArgs[1] ?? 'default');
+if ($__bag->has($__errorArgs[0])) :
+if (isset($message)) { $__messageOriginal = $message; }
+$message = $__bag->first($__errorArgs[0]); ?>
                                 <div class="form-text text-danger">Gambar terlalu besar</div>
-                                @enderror
+                                <?php unset($message);
+if (isset($__messageOriginal)) { $message = $__messageOriginal; }
+endif;
+unset($__errorArgs, $__bag); ?>
                                 <!--end::Hint-->
                                 <!--end::Image input-->
                             </div>
@@ -127,9 +125,9 @@
 						<!--begin::Status-->
 						<div class="py-4 card card-flush">
 							<!--begin::Card header-->
-							<div class="card-header">
+							<div class=" card-header">
 								<!--begin::Card title-->
-								<div class="card-title">
+								<div class="required card-title">
 									<h2>Domisili</h2>
 								</div>
 								<!--end::Card title-->
@@ -194,7 +192,7 @@
 										<!--begin::Card header-->
 										<div class="card-header">
 											<div class="card-title">
-												<h2>Nama Pegawai</h2>
+												<h2>Biodata Pustakawan</h2>
 											</div>
 										</div>
 										<!--end::Card header-->
@@ -206,7 +204,7 @@
 												<label class="required form-label">Nama</label>
 												<!--end::Label-->
 												<!--begin::Input-->
-												<input type="text" name="nama_pegawai" class="mb-2 form-control" placeholder="Nama" required/>
+												<input type="text" name="nama_pustakawan" class="mb-2 form-control" placeholder="Nama" required/>
 												<!--end::Input-->
 											</div>
 											<!--end::Input group-->
@@ -233,11 +231,12 @@
 											<!--begin::Input group-->
 											<div class="mb-10 fv-row">
 												<!--begin::Label-->
-												<label class="required form-label">Terhitung Mulai Tanggal</label>
+												<label class="form-label">Terhitung Mulai Tanggal</label>
 												<!--end::Label-->
 												<!--begin::Input-->
-												<input type="date" name="tmt" class="mb-2 form-control" placeholder="Tanggal Masuk" required/>
+												<input type="date" name="tmt" class="mb-2 form-control" placeholder=" Tanggal Masuk"/>
 												<!--end::Input-->
+												<div class="class form-text">diisi khusus untuk pustakawan struktural</div>
 											</div>
 											<!--end::Input group-->
 											<!--begin::Input group-->
@@ -248,15 +247,27 @@
 												<!--begin::Input-->
 												<input type="date" name="tmt_mengajar" class="mb-2 form-control" placeholder="Tanggal Masuk"/>
 												<!--end::Input-->
+												<div class="div form-text">diisi khusus struktural yang menjadi dosen</div>
 											</div>
 											<!--end::Input group-->
 											<!--begin::Input group-->
 											<div class="mb-10 fv-row">
 												<!--begin::Label-->
-												<label class="required form-label">Pendidikan Terakhir</label>
+												<label class="form-label">Tanggal Khidmah</label>
 												<!--end::Label-->
 												<!--begin::Input-->
-												<select name="pend_terakhir" class="form-select" data-control="select2" data-placeholder="Pilih Pendidikan Terakhir" data-hide-search="true" required autocomplete="lokasi">
+												<input type="date" name="tgl_khidmah" class="mb-2 form-control" placeholder="Tanggal Masuk"/>
+												<!--end::Input-->
+												<div class="class form-text" style="color">diisi khusus untuk pustakawan tenaga khidmah</div>
+											</div>
+											<!--end::Input group-->
+											<!--begin::Input group-->
+											<div class="mb-10 fv-row">
+												<!--begin::Label-->
+												<label class="form-label">Pendidikan Terakhir</label>
+												<!--end::Label-->
+												<!--begin::Input-->
+												<select name="pend_terakhir" class="form-select" data-control="select2" data-placeholder="Pilih Pendidikan Terakhir" data-hide-search="true" autocomplete="lokasi">
                                                     <option value="" disabled selected>Pilih Pendidikan Terakhir</option>
                                                     <option value="SD">SD</option>
                                                     <option value="SMP/SLTP">SMP/SLTP</option>
@@ -267,6 +278,7 @@
                                                     <option value="S3">S3</option>
                                                 </select>
 												<!--end::Input-->
+												<div class="class form-text">diisi khusus untuk pustakawan struktural</div>
 											</div>
 											<!--end::Input group-->
 											<!--begin::Input group-->
@@ -300,14 +312,29 @@
 											<!--begin::Input group-->
 											<div class="mb-10 fv-row">
 												<!--begin::Label-->
+												<label class="required form-label">Jabatan</label>
+												<!--end::Label-->
+												<!--begin::Input-->
+												<select name="jabatan_id" class="form-select" data-control="select2" data-hide-search="true" required>
+                                                    <option disabled selected>Pilih Jabatan</option>
+                                                    <?php $__currentLoopData = $jabatan; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+														<option value="<?php echo e($item->id); ?>"> <?php echo e($item->nama_jabatan); ?> </option>
+													<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                </select>
+												<!--end::Input-->
+											</div>
+											<!--end::Input group-->
+											<!--begin::Input group-->
+											<div class="mb-10 fv-row">
+												<!--begin::Label-->
 												<label class="required form-label">Ruang</label>
 												<!--end::Label-->
 												<!--begin::Input-->
 												<select name="ruang_id" class="form-select" data-control="select2" data-placeholder="Pilih Ruang" data-hide-search="true" required autocomplete="lokasi">
                                                     <option disabled selected>Pilih Ruang</option>
-													@foreach ($ruang as $item)
-														<option value="{{ $item->id }}"> {{ $item->ruang_pustakawans }} </option>
-													@endforeach
+													<?php $__currentLoopData = $ruang; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+														<option value="<?php echo e($item->id); ?>"> <?php echo e($item->ruang_pustakawans); ?> </option>
+													<?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                 </select>
 												<!--end::Input-->
 											</div>
@@ -372,7 +399,7 @@
 </div>
 <!--end:::Main-->
 
-@endsection
+<?php $__env->stopSection(); ?>
 <!--begin::Javascript-->
 <script>var hostUrl = "assets/";</script>
 <!--begin::Global Javascript Bundle(mandatory for all pages)-->
@@ -393,11 +420,11 @@
 <script src="assets/js/custom/utilities/modals/users-search.js"></script>
 <!--end::Custom Javascript-->
 <!--end::Javascript-->
-@if (session('success'))
+<?php if(session('success')): ?>
 <script>
     Swal.fire({
         title: 'Alhamdulillah!',
-        text: '{{ session('success') }}',
+        text: '<?php echo e(session('success')); ?>',
         icon: 'success',
         confirmButtonText: 'OK',
         customClass: {
@@ -406,7 +433,7 @@
         buttonsStyling: false
     });
 </script>
-@endif
+<?php endif; ?>
 
 <script>
 document.addEventListener("DOMContentLoaded", async function () {
@@ -493,3 +520,5 @@ document.addEventListener("DOMContentLoaded", async function () {
 
 
 
+
+<?php echo $__env->make('layout.sidebarnavbar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /var/www/html/resources/views/admin/Master/pustakawan/tambah_pustakawan.blade.php ENDPATH**/ ?>

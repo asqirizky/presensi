@@ -113,10 +113,22 @@
                                     </td>
                                     <td class="text-center"></td>
                                     <td class="text-center">
-                                        @if ($item->ruang->ruang_pustakawans == "Perpustakaan Putra")
-                                            <div class="px-4 py-3 badge fs-6 badge-light-warning">{{ $item->ruang->ruang_pustakawans }}</div>
-                                        @elseif ($item->ruang->ruang_pustakawans == "Perpustakaan Putri")
-                                            <div class="px-4 py-3 badge fs-6 badge-light-primary">{{ $item->ruang->ruang_pustakawans }}</div>
+                                        @if ($item->ruang && $item->ruang->ruang_pustakawans == "Perpustakaan Pusat")
+                                            <div class="px-4 py-3 badge fs-6 badge-light-warning">
+                                                {{ $item->ruang->ruang_pustakawans }}
+                                            </div>
+                                        @elseif ($item->ruang && $item->ruang->ruang_pustakawans == "Perpustakaan Putri Pusat")
+                                            <div class="px-4 py-3 badge fs-6 badge-light-primary">
+                                                {{ $item->ruang->ruang_pustakawans }}
+                                            </div>
+                                        @elseif ($item->ruang && $item->ruang->ruang_pustakawans == "Perpustakaan Fakultas Syariah & Ekonomi Islam")
+                                            <div class="div px-4 py-3 badge fs-6 badge-light-info">
+                                                {{ $item->ruang->ruang_pustakawans }}
+                                            </div>
+                                        @elseif ($item->ruang && $item->ruang->ruang_pustakawans == "Perpustakaan Fakultas Ilmu Kebidanan")
+                                            <div class="div px-4 py-3 badge fs-6 badge-light-danger">
+                                                {{ $item->ruang->ruang_pustakawans }}
+                                            </div>
                                         @endif
                                     </td>
                                     <td></td>

@@ -15,11 +15,10 @@ class PustakawanController extends Controller
 {
     public function index()
     {
-        $pustakawan = Pustakawan::join('jabatans', 'pustakawans.jabatan_id', '=', 'jabatans.id')
-            ->where('pustakawans.status', 1) // tampilkan sesuai status aktif
-            ->orderBy('jabatans.eselon', 'asc') // urut berdasarkan eselon
-            ->select('pustakawans.*') // biar tidak bentrok kolom
-            ->get();
+        $pustakawan = Pustakawan::with('jabatan')
+            ->where('status', 1)
+            ->get()
+            ->sortBy('jabatan.eselon'); // sorting di collection
 
         $jabatan = Jabatan::where('status', 1)->get();
 
@@ -32,9 +31,11 @@ class PustakawanController extends Controller
     public function tambah () {
 
         $ruang = Ruang::get();
+        $jabatan = Jabatan::where('status', 1)->get();
 
-        return view('admin.Master.pustakawan.tambah_pegawai', compact(
+        return view('admin.Master.pustakawan.tambah_pustakawan', compact(
             'ruang',
+            'jabatan',
         ));
     }
 
@@ -82,14 +83,12 @@ class PustakawanController extends Controller
         ];
 
         foreach ($hariList as $hari) {
-            // Default semua shift = 0
             $data = [
                 'pagi' => 0,
                 'siang' => 0,
                 'malam' => 0,
             ];
 
-            // Jika ada shift yang aktif, set jadi 1
             if (isset($request->aktif[$hari])) {
                 foreach ($request->aktif[$hari] as $index => $value) {
                     $shiftName = $shiftMap[$index] ?? null;
@@ -99,13 +98,11 @@ class PustakawanController extends Controller
                 }
             }
 
-            // Jika semua shift 0 → hapus data jika ada
             if ($data['pagi'] == 0 && $data['siang'] == 0 && $data['malam'] == 0) {
                 PustakawanJadwal::where('pustakawan_id', $id)
                     ->where('hari', $hari)
                     ->delete();
             } else {
-                // Jika ada shift aktif → update atau buat baru
                 PustakawanJadwal::updateOrCreate(
                     ['pustakawan_id' => $id, 'hari' => $hari],
                     array_merge($data, ['nik' => $pustakawan->nik])
@@ -140,10 +137,8 @@ class PustakawanController extends Controller
         $berkas = $request->file('berkas');
         $fileName = $berkas->getClientOriginalName();
 
-        // Simpan file ke storage/app/public/berkas dengan nama aslinya
         $berkas->storeAs('public/berkas', $fileName);
 
-        // Simpan nama file dan keterangan ke database
         $pustakawan->update([
             'berkas' => $fileName,
             'keterangan' => $request->keterangan,
@@ -155,8 +150,17 @@ class PustakawanController extends Controller
     public function store (Request $request) {
 
         $tahunTmt = Carbon::parse($request->tmt)->format('Y');
-        $jumlahTahunIni = Pustakawan::whereYear('tmt', $tahunTmt)->count();
-        $nik = $tahunTmt . str_pad($jumlahTahunIni + 1, 3, '0', STR_PAD_LEFT);
+        $jabatan = Jabatan::findOrfail($request->jabatan_id);
+        $eselon = $jabatan->eselon;
+
+        $jumlah = Pustakawan::whereYear('tmt', $tahunTmt)
+            ->whereHas('jabatan', function ($q) use ($eselon) {
+                $q->where('eselon', $eselon);
+            })->count();
+
+        $urut = str_pad($jumlah + 1, 3, '0', STR_PAD_LEFT);
+
+        $nik = $tahunTmt . $eselon . $urut;
 
         $request->validate([
             'foto' => 'required|image|mimes:png,jpg,jpeg|max:1024',
@@ -184,7 +188,7 @@ class PustakawanController extends Controller
             'foto' => $foto->hashName(),
         ]);
 
-        return redirect('/admin/master-pustakawan')->with('success', 'Alhamdulillah, data berhasil disimpan');
+        return redirect('/admin/master-pustakawan.index')->with('success', 'data berhasil disimpan');
     }
 
     public function update (Request $request, $id) {

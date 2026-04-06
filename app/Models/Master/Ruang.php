@@ -14,7 +14,7 @@ class Ruang extends Model
 
     public function pustakawan()
     {
-        return $this->hasMany(Pustakawan::class);
+        return $this->hasMany(Pustakawan::class, 'ruang_id');
     }
 
     public function libur()
