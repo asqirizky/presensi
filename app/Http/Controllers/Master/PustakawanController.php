@@ -15,8 +15,7 @@ class PustakawanController extends Controller
 {
     public function index()
     {
-        $pustakawan = Pustakawan::with('jabatan')
-            ->where('status', 1)
+        $pustakawan = Pustakawan::with('jabatan', 'ruang')
             ->get()
             ->sortBy('jabatan.eselon'); // sorting di collection
 
@@ -188,85 +187,91 @@ class PustakawanController extends Controller
             'foto' => $foto->hashName(),
         ]);
 
-        return redirect('/admin/master-pustakawan.index')->with('success', 'data berhasil disimpan');
+        return redirect()->route('master-pustakawan.index')->with('success', 'data berhasil disimpan');
     }
 
-    public function update (Request $request, $id) {
-
+    public function update(Request $request, $id)
+    {
         $pustakawan = Pustakawan::findOrFail($id);
 
         $request->validate([
-            'pustakawan'  => 'required|string',
+            'nama_pustakawan' => 'required|string',
+            'foto' => 'nullable|image|mimes:jpg,jpeg,png|max:1024',
             'status' => 'nullable|in:0,1',
         ]);
 
         // =========================
-        // GENERATE NIK
+        // JABATAN
         // =========================
-        $tahunTmt = Carbon::parse($request->tmt)->format('Y');
-
-        // ambil jabatan
         $jabatan = Jabatan::findOrFail($request->jabatan_id);
+        $eselon = $jabatan->eselon ?? 0;
 
-        // pastikan eselon ada
-        $eselon = $jabatan->eselon ?? 0; // fallback kalau null
+        // =========================
+        // CEK KHIDMAH / STRUKTURAL
+        // =========================
+        $isKhidmah = str_contains(strtolower($jabatan->nama_jabatan), 'khidmah');
 
-        // hitung berdasarkan jabatan_id langsung (lebih aman)
-        $jumlah = Pustakawan::whereYear('tmt', $tahunTmt)
+        // tentukan field & tahun
+        $field = $isKhidmah ? 'tgl_khidmah' : 'tmt';
+
+        $tanggal = $isKhidmah ? $request->tgl_khidmah : $request->tmt;
+        $tahun = Carbon::parse($tanggal)->format('Y');
+
+        // =========================
+        // HITUNG NOMOR URUT
+        // =========================
+        $jumlah = Pustakawan::whereYear($field, $tahun)
             ->where('jabatan_id', $request->jabatan_id)
             ->where('id', '!=', $id)
             ->count();
 
         $noUrut = str_pad($jumlah + 1, 3, '0', STR_PAD_LEFT);
 
-        $nik = $tahunTmt . $eselon . $noUrut;
+        // =========================
+        // GENERATE NIK
+        // =========================
+        $nik = $tahun . $eselon . $noUrut;
 
+        // =========================
+        // HANDLE FOTO
+        // =========================
         if ($request->hasFile('foto')) {
+
+            // hapus foto lama
+            if ($pustakawan->foto && file_exists(storage_path('app/public/pustakawan/' . $pustakawan->foto))) {
+                unlink(storage_path('app/public/pustakawan/' . $pustakawan->foto));
+            }
 
             $foto = $request->file('foto');
             $foto->storeAs('public/pustakawan', $foto->hashName());
 
-            $pustakawan->update([
-                'foto' => $foto->hashName(),
-                'nik' => $nik,
-                'nama_pustakawan' => $request->nama_pustakawan,
-                'tempat_lahir' => $request->tempat_lahir,
-                'tgl_lahir' => $request->tgl_lahir,
-                'tmt' => $request->tmt,
-                'tmt_mengajar' => $request->tmt_mengajar,
-                'tgl_khidmah' => $request->tgl_khidmah,
-                'pend_terakhir' => $request->pend_terakhir,
-                'jk' => $request->jk,
-                'status_perkawinan' => $request->status_perkawinan,
-                'status' => $request->has('status') ? '1' :  '0',
-                'jabatan_id' => $request->jabatan_id,
-                'ruang_id' => $request->ruang_id,
-                'asrama' => $request->asrama,
-                'sekolah_pagi' => $request->sekolah_pagi,
-                'sekolah_sore' => $request->sekolah_sore,
-            ]);
-        } else {
-            $pustakawan->update([
-                'nik' => $nik,
-                'pustakawan' => $request->pustakawan,
-                'tempat_lahir' => $request->tempat_lahir,
-                'tgl_lahir' => $request->tgl_lahir,
-                'tmt' => $request->tmt,
-                'tmt_mengajar' => $request->tmt_mengajar,
-                'tgl_khidmah' => $request->tgl_khidmah,
-                'pend_terakhir' => $request->pend_terakhir,
-                'jk' => $request->jk,
-                'status_perkawinan' => $request->status_perkawinan,
-                'status' => $request->has('status') ? '1' :  '0',
-                'jabatan_id' => $request->jabatan_id,
-                'ruang_id' => $request->ruang_id,
-                'asrama' => $request->asrama,
-                'sekolah_pagi' => $request->sekolah_pagi,
-                'sekolah_sore' => $request->sekolah_sore,
-            ]);
+            $pustakawan->foto = $foto->hashName();
         }
 
-        return back()->with('success', 'Data berhasil di perbarui');
+        // =========================
+        // UPDATE DATA
+        // =========================
+        $pustakawan->update([
+            'nik' => $nik,
+            'nama_pustakawan' => $request->nama_pustakawan,
+            'tempat_lahir' => $request->tempat_lahir,
+            'tgl_lahir' => $request->tgl_lahir,
+            'tmt' => $request->tmt,
+            'tmt_mengajar' => $request->tmt_mengajar,
+            'tgl_khidmah' => $request->tgl_khidmah,
+            'pend_terakhir' => $request->pend_terakhir,
+            'jk' => $request->jk,
+            'status_perkawinan' => $request->status_perkawinan,
+            'status' => $request->has('status') ? '1' : '0',
+            'jabatan_id' => $request->jabatan_id,
+            'ruang_id' => $request->ruang_id,
+            'asrama' => $request->asrama,
+            'sekolah_pagi' => $request->sekolah_pagi,
+            'sekolah_sore' => $request->sekolah_sore,
+            'foto' => $pustakawan->foto
+        ]);
+
+        return back()->with('success', 'Data berhasil diperbarui');
     }
 
     public function destroy ($id) {

@@ -1,7 +1,6 @@
-@extends('layout.sidebarnavbar')
-@section('admin-konten')
+<?php $__env->startSection('admin-konten'); ?>
 
-{{-- content --}}
+
 <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
     <div class="d-flex flex-column flex-column-fluid">
         <div id="kt_app_toolbar" class="py-3 app-toolbar py-lg-6">
@@ -65,9 +64,9 @@
                                     <div class="flex-wrap gap-4 d-flex flex-stack">
                                         <!--begin::Destination-->
                                         <!--begin::Search-->
-                                        <button type="submit" class="mb-4 btn btn-light-primary btn-sm" data-bs-toggle="modal" data-bs-target="#kt_modal_edit{{ $pustakawan->id }}">Edit</button>
+                                        <button type="submit" class="mb-4 btn btn-light-primary btn-sm" data-bs-toggle="modal" data-bs-target="#kt_modal_edit<?php echo e($pustakawan->id); ?>">Edit</button>
                                         <!--end::Search-->
-                                        @include('admin.Master.pustakawan.pustakawan_edit')
+                                        <?php echo $__env->make('admin.Master.pustakawan.pustakawan_edit', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                                     </div>
                                     <!--begin::Filters-->
                                 </div>
@@ -84,7 +83,7 @@
 										<!--end::Label-->
 										<!--begin::Col-->
 										<div class="col-lg-8">
-											<span class="text-gray-800 fw-bold fs-6">{{ $pustakawan->nik }}</span>
+											<span class="text-gray-800 fw-bold fs-6"><?php echo e($pustakawan->nik); ?></span>
 										</div>
 										<!--end::Col-->
 									</div>
@@ -96,7 +95,7 @@
 										<!--end::Label-->
 										<!--begin::Col-->
 										<div class="col-lg-8">
-											<span class="text-gray-800 fw-bold fs-6">{{ $pustakawan->nama_pustakawan }}</span>
+											<span class="text-gray-800 fw-bold fs-6"><?php echo e($pustakawan->nama_pustakawan); ?></span>
 										</div>
 										<!--end::Col-->
 									</div>
@@ -108,7 +107,7 @@
 										<!--end::Label-->
 										<!--begin::Col-->
 										<div class="col-lg-8">
-											<span class="text-gray-800 fw-bold fs-6">{{ $pustakawan->tempat_lahir }}</span>
+											<span class="text-gray-800 fw-bold fs-6"><?php echo e($pustakawan->tempat_lahir); ?></span>
 										</div>
 										<!--end::Col-->
 									</div>
@@ -120,7 +119,7 @@
 										<!--end::Label-->
 										<!--begin::Col-->
 										<div class="col-lg-8">
-											<span class="text-gray-800 fw-bold fs-6">{{ Carbon\Carbon::parse($pustakawan->tgl_lahir)->isoFormat('dddd, D MMMM Y') }}</span>
+											<span class="text-gray-800 fw-bold fs-6"><?php echo e(Carbon\Carbon::parse($pustakawan->tgl_lahir)->isoFormat('dddd, D MMMM Y')); ?></span>
 										</div>
 										<!--end::Col-->
 									</div>
@@ -132,7 +131,7 @@
 										<!--end::Label-->
 										<!--begin::Col-->
 										<div class="col-lg-8">
-											<span class="text-gray-800 fw-bold fs-6">{{ Carbon\Carbon::parse($pustakawan->tmt)->isoFormat('dddd, D MMMM Y') }}</span>
+											<span class="text-gray-800 fw-bold fs-6"><?php echo e(Carbon\Carbon::parse($pustakawan->tmt)->isoFormat('dddd, D MMMM Y')); ?></span>
 										</div>
 										<!--end::Col-->
 									</div>
@@ -144,7 +143,7 @@
 										<!--end::Label-->
 										<!--begin::Col-->
 										<div class="col-lg-8">
-											<span class="text-gray-800 fw-bold fs-6">{{ Carbon\Carbon::parse($pustakawan->tmt_mengajar)->isoFormat('dddd, D MMMM Y') }}</span>
+											<span class="text-gray-800 fw-bold fs-6"><?php echo e(Carbon\Carbon::parse($pustakawan->tmt_mengajar)->isoFormat('dddd, D MMMM Y')); ?></span>
 										</div>
 										<!--end::Col-->
 									</div>
@@ -156,7 +155,7 @@
 										<!--end::Label-->
 										<!--begin::Col-->
 										<div class="col-lg-8">
-											<span class="text-gray-800 fw-bold fs-6">{{ ucwords(strtolower($pustakawan->domisili)) }}</span>
+											<span class="text-gray-800 fw-bold fs-6"><?php echo e(ucwords(strtolower($pustakawan->domisili))); ?></span>
 										</div>
 										<!--end::Col-->
 									</div>
@@ -168,7 +167,7 @@
 										<!--end::Label-->
 										<!--begin::Col-->
 										<div class="col-lg-8">
-											<span class="text-gray-800 fw-bold fs-6">{{ ($pustakawan->pend_terakhir) }}</span>
+											<span class="text-gray-800 fw-bold fs-6"><?php echo e(($pustakawan->pend_terakhir)); ?></span>
 										</div>
 										<!--end::Col-->
 									</div>
@@ -180,7 +179,7 @@
 										<!--end::Label-->
 										<!--begin::Col-->
 										<div class="col-lg-8">
-											<span class="text-gray-800 fw-bold fs-6">{{ $pustakawan->jk }}</span>
+											<span class="text-gray-800 fw-bold fs-6"><?php echo e($pustakawan->jk); ?></span>
 										</div>
 										<!--end::Col-->
 									</div>
@@ -192,7 +191,7 @@
 										<!--end::Label-->
 										<!--begin::Col-->
 										<div class="col-lg-8">
-											<span class="text-gray-800 fw-bold fs-6">{{ $pustakawan->status_perkawinan }}</span>
+											<span class="text-gray-800 fw-bold fs-6"><?php echo e($pustakawan->status_perkawinan); ?></span>
 										</div>
 										<!--end::Col-->
 									</div>
@@ -204,7 +203,7 @@
 										<!--end::Label-->
 										<!--begin::Col-->
 										<div class="col-lg-8">
-											<span class="text-gray-800 fw-bold fs-6">{{ $pustakawan->jabatan->nama_jabatan }}</span>
+											<span class="text-gray-800 fw-bold fs-6"><?php echo e($pustakawan->jabatan->nama_jabatan); ?></span>
 										</div>
 										<!--end::Col-->
 									</div>
@@ -216,7 +215,7 @@
 										<!--end::Label-->
 										<!--begin::Col-->
 										<div class="col-lg-8">
-											<span class="text-gray-800 fw-bold fs-6">{{ $pustakawan->ruang?->ruang_pustakawans}} </span>
+											<span class="text-gray-800 fw-bold fs-6"><?php echo e($pustakawan->ruang?->ruang_pustakawans); ?> </span>
 										</div>
 										<!--end::Col-->
 									</div>
@@ -228,8 +227,9 @@
 										<!--end::Label-->
 										<!--begin::Col-->
 										<div class="col-lg-8">
-											<span class="text-gray-800 fw-bold fs-6 badge {{ $pustakawan->status ? 'bg-primary' : 'bg-danger' }}">
-                                                {{ $pustakawan->status ? 'Aktif' : 'Tidak Aktif' }}
+											<span class="text-gray-800 fw-bold fs-6 badge <?php echo e($pustakawan->status ? 'bg-primary' : 'bg-danger'); ?>">
+                                                <?php echo e($pustakawan->status ? 'Aktif' : 'Tidak Aktif'); ?>
+
                                             </span>
 										</div>
 										<!--end::Col-->
@@ -242,15 +242,15 @@
                     </div>
                     <!--begin::Col-->
                     <div class="col-xl-8">
-                        {{-- Form Tambah Shift --}}
-                        <form class="form" enctype="multipart/form-data" action="{{ route('pustakawan.kelolah_jadwal', $pustakawan->id) }}" method="POST">
-                            @csrf
+                        
+                        <form class="form" enctype="multipart/form-data" action="<?php echo e(route('pustakawan.kelolah_jadwal', $pustakawan->id)); ?>" method="POST">
+                            <?php echo csrf_field(); ?>
                             <div class="mb-5 shadow-sm card card-flush h-xl-100">
                                 <!-- Header -->
                                 <div class="pb-3 card-header pt-7 bg-success" style="background-image:url('admin/assets//media/pattern.png'); background-size: 500px; background-position: right; background-repeat: no-repeat;">
                                     <h3 class="card-title align-items-start flex-column">
                                         <span class="text-gray-900 card-label fw-bold">Tambah Shift Untuk</span>
-                                        <span class="mt-1 text-gray-500 fw-semibold fs-6">{{ $pustakawan->nama }}</span>
+                                        <span class="mt-1 text-gray-500 fw-semibold fs-6"><?php echo e($pustakawan->nama); ?></span>
                                     </h3>
                                     <div class="card-toolbar">
                                         <div class="gap-4 d-flex flex-stack">
@@ -265,18 +265,18 @@
                                         <thead>
                                             <tr class="text-white fw-bold bg-success">
                                                 <th class="rounded-start ps-4">Hari</th>
-                                                <th colspan="{{ count($shiftList) }}" class="text-center">Pilih Shift</th>
+                                                <th colspan="<?php echo e(count($shiftList)); ?>" class="text-center">Pilih Shift</th>
                                                 <th class="rounded-end"></th>
                                             </tr>
                                         </thead>
                                         <tbody class="text-gray-700 fw-semibold">
-                                            @foreach ($hariList as $hari)
+                                            <?php $__currentLoopData = $hariList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $hari): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                                 <tr>
                                                     <td class="ps-4">
-                                                        <span class="px-4 py-2 badge badge-light-primary fs-7">{{ $hari }}</span>
+                                                        <span class="px-4 py-2 badge badge-light-primary fs-7"><?php echo e($hari); ?></span>
                                                     </td>
-                                                    @foreach ($shiftList as $shiftId => $shiftNama)
-                                                        @php
+                                                    <?php $__currentLoopData = $shiftList; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $shiftId => $shiftNama): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                        <?php
                                                             $shiftMap = [
                                                                 1 => 'pagi',
                                                                 2 => 'siang',
@@ -284,31 +284,32 @@
                                                             ];
                                                             $shiftKey = $shiftMap[$shiftId];
                                                             $aktif = isset($jadwalAktif[$hari]) && $jadwalAktif[$hari][$shiftKey] == 1;
-                                                        @endphp
+                                                        ?>
                                                         <td class="text-center">
                                                             <div class="form-check form-check-custom d-flex justify-content-center">
                                                                 <input class="form-check-input"
                                                                     type="checkbox"
-                                                                    id="shift-{{ $hari }}-{{ $shiftId }}"
-                                                                    name="aktif[{{ $hari }}][{{ $shiftId }}]"
+                                                                    id="shift-<?php echo e($hari); ?>-<?php echo e($shiftId); ?>"
+                                                                    name="aktif[<?php echo e($hari); ?>][<?php echo e($shiftId); ?>]"
                                                                     value="1"
-                                                                    @checked($aktif)>
+                                                                    <?php if($aktif): echo 'checked'; endif; ?>>
                                                                 <label class="form-check-label ms-2"
-                                                                    for="shift-{{ $hari }}-{{ $shiftId }}">
-                                                                    {{ $shiftNama }}
+                                                                    for="shift-<?php echo e($hari); ?>-<?php echo e($shiftId); ?>">
+                                                                    <?php echo e($shiftNama); ?>
+
                                                                 </label>
                                                             </div>
                                                         </td>
-                                                    @endforeach
+                                                    <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                                     <td></td>
                                                 </tr>
-                                            @endforeach
+                                            <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                                         </tbody>
                                     </table>
                                 </div>
                             </div>
                         </form>
-                        {{-- Section Recent Followers --}}
+                        
                         <div class="mb-5 row g-5 g-xl-10">
                             <div class="col-xl-12">
                                 <div class="shadow-sm card card-flush h-xl-100">
@@ -320,19 +321,19 @@
                                             <a href="" data-bs-toggle="modal" data-bs-target="#kt_modal_new_target" class="btn btn-sm btn-primary">Tambah Berkas</a>
                                         </div>
                                     </div>
-                                    @include('admin.Master.pustakawan.tambah_berkas')
+                                    <?php echo $__env->make('admin.Master.pustakawan.tambah_berkas', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                                     <div class="card-body pt-7">
                                         <div class="row align-items-end h-100 gx-5 gx-xl-10">
-                                            @if ($pustakawan->berkas)
-                                                @php
+                                            <?php if($pustakawan->berkas): ?>
+                                                <?php
                                                     $berkasUrl = asset('storage/berkas/' . $pustakawan->berkas);
-                                                @endphp
+                                                ?>
 
                                                 <div class="mb-5 col-md-4">
-                                                    <a class="d-block overlay" data-fslightbox="lightbox-berkas" href="{{ asset('storage/berkas/' . $pustakawan->berkas) }}" target="_blank">
+                                                    <a class="d-block overlay" data-fslightbox="lightbox-berkas" href="<?php echo e(asset('storage/berkas/' . $pustakawan->berkas)); ?>" target="_blank">
                                                         <div class="overlay-wrapper bgi-position-center bgi-no-repeat bgi-size-cover card-rounded h-200px"
-                                                            style="background-image:url('{{ asset('storage/berkas/' . $pustakawan->berkas) }}'); height:200px;">
-                                                            <img src="{{ asset('storage/' . $pustakawan->berkas) }}" alt="image" class="d-none">
+                                                            style="background-image:url('<?php echo e(asset('storage/berkas/' . $pustakawan->berkas)); ?>'); height:200px;">
+                                                            <img src="<?php echo e(asset('storage/' . $pustakawan->berkas)); ?>" alt="image" class="d-none">
                                                         </div>
                                                         <div class="bg-opacity-25 overlay-layer card-rounded bg-dark">
                                                             <i class="text-white ki-duotone ki-eye fs-3x"></i>
@@ -341,16 +342,18 @@
 
                                                     <div class="mt-3">
                                                         <a class="mb-2 text-gray-800 text-hover-primary fs-3 fw-bold d-block">
-                                                            Nama Berkas : {{ $pustakawan->keterangan }}
+                                                            Nama Berkas : <?php echo e($pustakawan->keterangan); ?>
+
                                                         </a>
                                                         <span class="text-gray-500 fw-bold fs-6 d-block lh-1">
-                                                            Diupload pada: {{ $pustakawan->updated_at->format('d M Y H:i') }}
+                                                            Diupload pada: <?php echo e($pustakawan->updated_at->format('d M Y H:i')); ?>
+
                                                         </span>
                                                     </div>
                                                 </div>
-                                            @else
+                                            <?php else: ?>
                                                 <p class="text-muted">Belum ada berkas yang diunggah. <br> Unggah berkas seperti ijazah atau sertifikat dan berkas lainnya</p>
-                                            @endif
+                                            <?php endif; ?>
                                         </div>
                                     </div>
                                 </div>
@@ -366,7 +369,7 @@
         <!--end::Content-->
     </div>
 </div>
-@include('layout.footer')
+<?php echo $__env->make('layout.footer', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
 
 <!--begin::Javascript-->
 <script>
@@ -377,4 +380,6 @@
 <script src="admin/assets/js/scripts.bundle.js"></script>
 <!--end::Global Javascript Bundle-->
 
-@endsection()
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layout.sidebarnavbar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /home/yogy/Dokumen/presensi/resources/views/admin/Master/pustakawan/detail_pustakawan.blade.php ENDPATH**/ ?>

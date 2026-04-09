@@ -9,6 +9,7 @@ use App\Http\Controllers\Absensi\LaporanController;
 use App\Http\Controllers\Absensi\LokasiAbsensiController;
 use App\Http\Controllers\Absensi\RekapController;
 use App\Http\Controllers\Absensi\ShiftController;
+use App\Http\Controllers\AttendanceController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\Kehadiran\BarokahPustakawanController;
 use App\Http\Controllers\Kehadiran\IzinPegawaiController;
@@ -72,43 +73,6 @@ Route::middleware(['auth', PermissionMiddleware::class . ':akses pengguna-hapus'
     Route::get('/admin/pengguna-akses/{id}/hapus', [PermissionController::class, 'destroy']);
 });
 
-// Absensi-khidmah
-Route::middleware(['auth', PermissionMiddleware::class . ':absen khidmah-lihat'])->group(function () {
-    Route::resource('/admin/absensi-khidmah', KhidmahController::class);
-});
-
-Route::middleware(['auth', PermissionMiddleware::class . ':absen khidmah-tambah'])->group(function () {
-    Route::get('/admin/absensi-khidmah_tambah', [KhidmahController::class, 'tambah']);
-});
-
-Route::middleware(['auth', PermissionMiddleware::class . ':absen khidmah-hapus'])->group(function () {
-    Route::get('/admin/absensi-khidmah({id})/hapus', [KhidmahController::class, 'destroy']);
-});
-
-Route::middleware(['auth', PermissionMiddleware::class . ':absen khidmah-detail'])->group(function () {
-    Route::get('admin/absensi-detail_khidmah({id})', [KhidmahController::class, 'detail']);
-    Route::post('admin/absensi-khidmah/kelolah-shift/{id}', [KhidmahController::class, 'kelolah_shift']);
-});
-
-
-// Absensi-lokasi
-Route::middleware(['auth', PermissionMiddleware::class . ':absen lokasi-lihat'])->group(function () {
-    Route::resource('/admin/absensi-lokasi', LokasiAbsensiController::class);
-});
-
-Route::middleware(['auth', PermissionMiddleware::class . ':absen lokasi-hapus'])->group(function () {
-    Route::get('/admin/absensi-lokasi({id})/hapus', [LokasiAbsensiController::class, 'hapus']);
-});
-
-// Absensi-holiday
-Route::middleware(['auth', PermissionMiddleware::class . ':absen libur-lihat'])->group(function () {
-    Route::resource('/admin/absensi-holiday', HolidayController::class);
-});
-
-Route::middleware(['auth', PermissionMiddleware::class . ':absen libur-hapus'])->group(function () {
-    Route::get('/admin/absensi-holiday({id})/hapus', [HolidayController::class, 'destroy']);
-});
-
 
 // Absensi-rekap
 Route::middleware(['auth', PermissionMiddleware::class . ':absen rekap-lihat'])->group(function () {
@@ -118,30 +82,7 @@ Route::middleware(['auth', PermissionMiddleware::class . ':absen rekap-lihat'])-
     Route::get('/admin/rekap-laporan', [LaporanController::class, 'cetakPDF'])->name('rekap.laporan');
 });
 
-// Absensi-izin
-Route::middleware(['auth', PermissionMiddleware::class . ':absen izin-lihat'])->group(function () {
-    Route::resource('/admin/absensi-izin', IzinController::class);
-});
 
-Route::middleware(['auth', PermissionMiddleware::class . ':absen izin-hapus'])->group(function () {
-    Route::get('/admin/absensi-izin({id})/hapus', [IzinController::class, 'destroy']);
-});
-// Route::get('/admin/absensi-detail_izin({id})', [IzinController::class, 'detail']);
-
-
-
-// Absensi-shift
-Route::middleware(['auth', PermissionMiddleware::class . ':absen shift-lihat'])->group(function () {
-    Route::resource('/admin/absensi-shift', ShiftController::class);
-});
-
-Route::middleware(['auth', PermissionMiddleware::class . ':absen shift-hapus'])->group(function () {
-    Route::get('/admin/absensi-shift({id})/hapus', [ShiftController::class, 'destroy']);
-});
-
-Route::middleware(['auth', PermissionMiddleware::class . ':absen barokah-lihat'])->group(function () {
-    Route::resource('/admin/absensi-barokah', BarokahController::class);
-});
 
 // Absensi-proses
 Route::resource('/admin/absensi-absen', AbsenController::class);
@@ -157,8 +98,8 @@ Route::middleware(['auth', PermissionMiddleware::class . ':kehadiran izin-hapus'
 });
 
 // Kehadiran proses
-Route::middleware(['auth', PermissionMiddleware::class . ':kehadiran hadir-lihat'])->group(function () {
-    Route::resource('/admin/kehadiran-hadir', KehadiranController::class);
+Route::middleware(['auth', PermissionMiddleware::class . ':absen attendance-lihat'])->group(function () {
+    Route::resource('/admin/absen-attendance', AttendanceController::class);
 });
 
 // Absen biasa

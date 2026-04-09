@@ -1,7 +1,6 @@
-@extends('layout.sidebarnavbar')
-@section('admin-konten')
+<?php $__env->startSection('admin-konten'); ?>
 
-{{-- content --}}
+
 <!--begin::Main-->
 <div class="app-main flex-column flex-row-fluid" id="kt_app_main">
     <!--begin::Content wrapper-->
@@ -14,7 +13,7 @@
                 <div class="flex-wrap page-title d-flex flex-column justify-content-center me-3">
                     <!--begin::Title-->
                     <h1 class="my-0 text-gray-900 page-heading d-flex fw-bold fs-3 flex-column justify-content-center">
-                        Data Pustkawan</h1>
+                        Data Domisili</h1>
                     <!--end::Title-->
                     <!--begin::Breadcrumb-->
                     <ul class="pt-1 my-0 breadcrumb breadcrumb-separatorless fw-semibold fs-7">
@@ -29,7 +28,7 @@
                         </li>
                         <!--end::Item-->
                         <!--begin::Item-->
-                        <li class="breadcrumb-item text-muted">Pustakawan</li>
+                        <li class="breadcrumb-item text-muted">Domisili</li>
                         <!--end::Item-->
                     </ul>
                     <!--end::Breadcrumb-->
@@ -46,7 +45,7 @@
                 <!--begin::Card-->
                 <div class="card">
                     <!--begin::Card header-->
-                    <div class="pt-6 border-0 card-header bg-success" style="background-image: url('/admin/assets/media/pattern.png'); background-size: 25%; background-position: right top; background-repeat: no-repeat;">
+                    <div class="pt-6 border-0 card-header bg-success" style="background-image: url('/admin/assets/media/pattern.png'); background-size: 650px; background-position: right; background-repeat: no-repeat;">
                         <!--begin::Card title-->
                         <div class="card-title">
                             <!--begin::Search-->
@@ -62,13 +61,14 @@
                         <!--begin::Card title-->
                         <!--begin::Card toolbar-->
                         <div class="card-toolbar">
-                            @if (auth()->user()->hasPermissionTo('master pustakawan-tambah'))
                             <div class="flex-wrap gap-3 d-flex justify-content-between align-items-end" data-kt-user-table-toolbar="base">
-                                <a href="{{ route('master-tambah.pegawai') }}" type="button" class="btn btn-primary">
-                                    <i class="ki-duotone ki-plus fs-2"></i> Tambah Pegawai
+                                <?php if(auth()->user()->hasPermissionTo('master jabatan-tambah')): ?>
+                                <a type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#kt_modal_update_details">
+                                    <i class="ki-duotone ki-plus fs-2"></i> Tambah Jabatan
                                 </a>
+                                <?php endif; ?>
+                                <?php echo $__env->make('admin.Master.jabatan.tambah_jabatan', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                             </div>
-                            @endif
                         </div>
                         <!--end::Card toolbar-->
                     </div>
@@ -79,101 +79,58 @@
                         <table class="table align-middle table-striped fs-6 gy-5" id="kt_ecommerce_products_table">
                             <thead class="fw-bold fs-5 bg-success">
                                 <tr class="text-white text-start fw-bold fs-7 text-uppercase gs-0">
-                                    <th class="text-center rounded-start w-125px pe-2">nik</th>
-                                    <th class="text-start min-w-250px">Nama</th>
+                                    <th class="text-center rounded-start min-w-20px"></th>
+                                    <th class="text-center min-w-100px">Nama Jabatan</th>
+                                    <th class="text-center min-w-20px"></th>
+                                    <th class="text-center min-w-100px">Status</th>
+                                    <th class="text-center"></th>
+                                    <th class="text-center min-w-100px">Eselon</th>
                                     <th></th>
-                                    <th class="text-center min-w-80px">Ruang</th>
-                                    <th></th>
-                                    <th class="text-center min-w-125px">Jabatan</th>
-                                    <th class="text-center min-w-125px">Status</th>
                                     <th class="text-center rounded-end min-w-100px">Opsi</th>
                                 </tr>
                             </thead>
                             <tbody class="text-gray-600 fw-semibold">
-                                @foreach ($pustakawan as $item)
+                                <?php $__currentLoopData = $jabatan->sortBy('ranking'); $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $item): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
                                 <tr>
-                                    <td class="text-center">
-                                        <div class="px-4 py-3 badge fs-7 badge-light-primary">
-                                            {{ $item->nik }}
-                                        </div>
-                                    </td>
-                                    <td class="d-flex align-items-center">
-                                        <!--begin:: Avatar -->
-                                        <div class="overflow-hidden symbol symbol-circle symbol-50px me-3">
-                                            <div class="symbol-label">
-                                                <img src="{{ url('storage/pustakawan/' . $item->foto) }}" class="w-100" />
-                                            </div>
-                                        </div>
-                                        <!--end::Avatar-->
-                                        <!--begin::User details-->
-                                        <div class="d-flex flex-column">
-                                            <div class="mb-1 text-gray-800">{{ $item->nama_pustakawan }}</div>
-                                        </div>
-                                        <!--begin::User details-->
-                                    </td>
+                                    <td class="text-center"></td>
+                                    <td class="text-center"><?php echo e($item->nama_jabatan); ?></td>
                                     <td class="text-center"></td>
                                     <td class="text-center">
-                                        @if ($item->ruang && $item->ruang->ruang_pustakawans == "Perpustakaan Pusat")
-                                            <div class="px-4 py-3 badge fs-6 badge-light-warning">
-                                                {{ $item->ruang->ruang_pustakawans }}
-                                            </div>
-                                        @elseif ($item->ruang && $item->ruang->ruang_pustakawans == "Perpustakaan Putri Pusat")
-                                            <div class="px-4 py-3 badge fs-6 badge-light-primary">
-                                                {{ $item->ruang->ruang_pustakawans }}
-                                            </div>
-                                        @elseif ($item->ruang && $item->ruang->ruang_pustakawans == "Perpustakaan Fakultas Syariah & Ekonomi Islam")
-                                            <div class="px-4 py-3 badge fs-6 badge-light-info">
-                                                {{ $item->ruang->ruang_pustakawans }}
-                                            </div>
-                                        @elseif ($item->ruang && $item->ruang->ruang_pustakawans == "Perpustakaan Fakultas Ilmu Kebidanan")
-                                            <div class="px-4 py-3 badge fs-6 badge-light-danger">
-                                                {{ $item->ruang->ruang_pustakawans }}
-                                            </div>
-                                        @elseif ($item->ruang && $item->ruang->ruang_pustakawans == "Viar A")
-                                            <div class="px-4 py-3 badge fs-6 badge-light-danger">
-                                                {{ $item->ruang->ruang_pustakawans }}
-                                            </div>
-                                        @elseif ($item->ruang && $item->ruang->ruang_pustakawans == "Viar B")
-                                            <div class="px-4 py-3 badge fs-6 badge-light-danger">
-                                                {{ $item->ruang->ruang_pustakawans }}
-                                            </div>
-                                        @endif
+                                        <?php if($item->status == "0"): ?>
+                                        <div class="px-4 py-3 badge fs-7 badge-light-danger"><?php echo e($item->status ? 'Aktif' : 'Tidak Aktif'); ?></div>
+                                        <?php endif; ?>
+                                        <?php if($item->status == "1"): ?>
+                                        <div class="px-4 py-3 badge fs-7 badge-light-success"><?php echo e($item->status ? 'Aktif' : 'Tidak Aktif'); ?></div>
+                                        <?php endif; ?>
                                     </td>
                                     <td></td>
-                                    <td class="text-center">
-                                        <div class="px-4 py-3 badge fs-7 badge-light-success">
-                                            {{ $item->jabatan->nama_jabatan }}
-                                        </div>
-                                    </td>
-                                    <td class="text-center">
-                                        @if ($item->status == "0")
-                                            <div class="badge py-3 px-4 fs-7 badge-light-info">{{ $item->status ? 'Aktif' : 'Tidak Aktif' }}</div>
-                                        @elseif ($item->status == "1")
-                                            <div class="badge py-3 px 4 fs-7 badge-light-primary">{{ $item->status ? 'Aktif' : 'Tidak Aktif' }} </div>
-                                        @endif
-                                    </td>
+                                    <td class="text-center"><?php echo e($item->eselon); ?></td>
+                                    <td class="text-center"></td>
                                     <td class="text-center pe-4">
                                         <a href="#" class="btn btn-sm btn-light-primary btn-active-primary btn-flex btn-center" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">Opsi
                                         <i class="ki-outline ki-down fs-5 ms-1"></i></a>
                                         <!--begin::Menu-->
                                         <div class="py-4 menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-600 menu-state-bg-light-primary fw-semibold fs-7 w-125px" data-kt-menu="true">
-                                            @if (auth()->user()->hasPermissionTo('master pustakawan-detail'))
+                                            <?php if(auth()->user()->hasPermissionTo('master jabatan-edit')): ?>
                                             <!--begin::Menu item-->
                                             <div class="px-3 menu-item">
-                                                <a class="px-3 menu-link" href="{{ url('admin/master-detail_pustakawan=' . $item->id) }}">Detail</a>
+                                                <a class="px-3 menu-link" data-bs-toggle="modal" data-bs-target="#kt_modal_new_target<?php echo e($item->id); ?>">Edit</a>
                                             </div>
                                             <!--end::Menu item-->
-                                            @endif
+                                            <?php endif; ?>
                                             <!--begin::Menu item-->
+                                            <?php if(auth()->user()->hasPermissionTo('master jabatan-hapus')): ?>
                                             <div class="px-3 menu-item">
-                                                <a href="{{ route('master-pustakawan.hapus', $item->id) }}" class="px-3 menu-link delete-button" data-kt-users-table-filter="delete_row" data-confirm-delete="true">Hapus</a>
+                                                <a href="<?php echo e(route('master-jabatan.hapus', $item->id)); ?>" class="px-3 menu-link delete-button">Hapus</a>
                                             </div>
+                                            <?php endif; ?>
                                             <!--end::Menu item-->
                                         </div>
+                                        <?php echo $__env->make('admin.Master.jabatan.edit_jabatan', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
                                         <!--end::Menu-->
                                     </td>
                                 </tr>
-                                @endforeach
+                                <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
                             </tbody>
                         </table>
                         <!--end::Table-->
@@ -188,7 +145,7 @@
     </div>
     <!--end::Content wrapper-->
     <!--begin::Footer-->
-    @include('layout.footer')
+    <?php echo $__env->make('layout.footer', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?>
     <!--end::Footer-->
 </div>
 <!--end:::Main-->
@@ -198,9 +155,9 @@
     var hostUrl = "assets/";
 </script>
 <!--begin::Global Javascript Bundle(mandatory for all pages)-->
-<script src="{{ asset('admin/assets/js/scripts.bundle.js') }}"></script>
+<script src="admin/assets/js/scripts.bundle.js"></script>
 <!--begin::Veadmin/ndors Javascript(used for this page only)-->
-<script src="{{ asset('admin/assets/plugins/custom/datatables/datatables.bundle.js') }}"></script>
+<script src="admin/assets/plugins/custom/datatables/datatables.bundle.js"></script>
 <!--end::Vendadmin/ors Javascript-->
 <!--begin::Cuadmin/stom Javascript(used for this page only)-->
 <script src="admin/assets/js/custom/apps/ecommerce/catalog/products.js"></script>
@@ -213,4 +170,6 @@
 <!--end::Custom Javascript-->
 <!--end::Javascript-->
 
-@endsection
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('layout.sidebarnavbar', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH /home/yogy/Dokumen/presensi/resources/views/admin/Master/jabatan/jabatan.blade.php ENDPATH**/ ?>
